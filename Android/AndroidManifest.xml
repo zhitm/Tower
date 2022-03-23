@@ -73,7 +73,8 @@
         <activity
             android:name=".activities.FlightActivity"
             android:launchMode="singleTask"
-            android:theme="@style/CustomActionBarTheme.Transparent">
+            android:theme="@style/CustomActionBarTheme.Transparent"
+            android:exported="true">
 
             <!-- Launcher Intent -->
             <intent-filter>
@@ -88,7 +89,8 @@
             android:label="@string/editor"
             android:launchMode="singleTop"
             android:theme="@style/CustomActionBarTheme.Transparent"
-            android:windowSoftInputMode="adjustNothing">
+            android:windowSoftInputMode="adjustNothing"
+            android:exported="false">
             <!-- Intent for opening mission files -->
             <intent-filter>
                 <action android:name="android.intent.action.VIEW"/>
