@@ -1,7 +1,7 @@
 package org.droidplanner.android.maps.providers.google_map.tiles.arcgis
 
 import android.content.Context
-import android.support.annotation.StringRes
+import androidx.annotation.StringRes
 import org.droidplanner.android.R
 import org.droidplanner.android.maps.DPMap
 import org.droidplanner.android.maps.providers.google_map.tiles.TileProviderManager

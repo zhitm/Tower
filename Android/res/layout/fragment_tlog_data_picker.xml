@@ -22,7 +22,7 @@
         android:background="@android:color/holo_blue_dark"
         android:layout_below="@+id/dialog_title"/>
 
-    <android.support.v7.widget.RecyclerView
+    <androidx.recyclerview.widget.RecyclerView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:id="@+id/tlogs_selector"

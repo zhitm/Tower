@@ -1,6 +1,6 @@
 package org.droidplanner.android.fragments.widget.diagnostics
 
-import android.support.annotation.StringRes
+import androidx.annotation.StringRes
 import com.o3dr.services.android.lib.drone.property.EkfStatus
 import com.o3dr.services.android.lib.util.SpannableUtils
 import lecho.lib.hellocharts.formatter.SimpleAxisValueFormatter

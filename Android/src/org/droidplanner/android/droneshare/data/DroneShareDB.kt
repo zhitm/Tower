@@ -5,7 +5,7 @@ import android.content.Context
 import android.database.sqlite.SQLiteDatabase
 import android.database.sqlite.SQLiteOpenHelper
 import android.net.Uri
-import android.support.v4.util.Pair
+import androidx.core.util.Pair
 import org.droidplanner.android.droneshare.data.DroneShareContract.UploadData
 import org.droidplanner.android.droneshare.data.SessionContract.SessionData
 import timber.log.Timber

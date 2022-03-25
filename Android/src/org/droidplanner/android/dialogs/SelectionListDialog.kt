@@ -1,7 +1,7 @@
 package org.droidplanner.android.dialogs
 
 import android.os.Bundle
-import android.support.v4.app.DialogFragment
+import androidx.fragment.app.DialogFragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -15,7 +15,8 @@ import org.droidplanner.android.fragments.actionbar.SelectionListAdapter
 abstract class SelectionListDialog : DialogFragment(), SelectionListAdapter.SelectionListener {
 
     companion object {
-        @JvmStatic public fun newInstance(viewAdapter: SelectionListAdapter<*>?): SelectionListDialog {
+        @JvmStatic
+        public fun newInstance(viewAdapter: SelectionListAdapter<*>?): SelectionListDialog {
             val selectionsDialog = object : SelectionListDialog() {
                 override fun getSelectionsAdapter() = viewAdapter
             }
@@ -31,8 +32,12 @@ abstract class SelectionListDialog : DialogFragment(), SelectionListAdapter.Sele
         isCancelable = true
     }
 
-    override fun onCreateView(inflater: LayoutInflater?, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-        return inflater?.inflate(R.layout.dialog_selection_list, container, false)
+    override fun onCreateView(
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View? {
+        return inflater.inflate(R.layout.dialog_selection_list, container, false)
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -41,7 +46,7 @@ abstract class SelectionListDialog : DialogFragment(), SelectionListAdapter.Sele
         val selectionsView = view.findViewById(R.id.selection_list) as ListView?
         val adapter = getSelectionsAdapter()
         selectionsView?.adapter = adapter
-        if(adapter != null)
+        if (adapter != null)
             selectionsView?.setSelection(adapter.selection)
     }
 
@@ -55,7 +60,7 @@ abstract class SelectionListDialog : DialogFragment(), SelectionListAdapter.Sele
         dismiss()
     }
 
-    override fun onSelection(){
+    override fun onSelection() {
         dismiss()
     }
 

@@ -6,6 +6,7 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.LinearLayout
 import android.widget.TextView
 import android.widget.Toast
 import com.o3dr.services.android.lib.drone.attribute.AttributeEvent
@@ -42,7 +43,11 @@ class MiniWidgetGeoInfo : TowerWidget() {
     private var latitude: TextView? = null
     private var longitude: TextView? = null
 
-    override fun onCreateView(inflater: LayoutInflater?, container: ViewGroup?, savedInstanceState: Bundle?): View? {
+    override fun onCreateView(
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View? {
         return inflater?.inflate(R.layout.fragment_mini_widget_geo_info, container, false)
     }
 
@@ -52,9 +57,9 @@ class MiniWidgetGeoInfo : TowerWidget() {
         latitude = view.findViewById(R.id.latitude_telem) as TextView?
         longitude = view.findViewById(R.id.longitude_telem) as TextView?
 
-        val clipboardMgr = context.getSystemService(Context.CLIPBOARD_SERVICE) as ClipboardManager
+        val clipboardMgr = context?.getSystemService(Context.CLIPBOARD_SERVICE) as ClipboardManager
 
-        val container = view.findViewById(R.id.mini_widget_geo_info_layout)
+        val container = view.findViewById<LinearLayout>(R.id.mini_widget_geo_info_layout)
         container?.setOnClickListener {
             val drone = drone
             if(drone.isConnected) {
@@ -64,7 +69,7 @@ class MiniWidgetGeoInfo : TowerWidget() {
                     val latLongText = "${droneGps.position.latitude}, ${droneGps.position.longitude}"
                     val clipData = ClipData.newPlainText("Vehicle Lat/Long", latLongText)
 
-                    clipboardMgr.primaryClip = clipData
+                    clipboardMgr.setPrimaryClip(clipData)
 
                     Toast.makeText(context, "Copied lat/long data", Toast.LENGTH_SHORT).show()
                 }

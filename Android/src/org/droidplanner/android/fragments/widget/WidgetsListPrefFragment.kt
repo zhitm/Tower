@@ -5,7 +5,7 @@ import android.app.FragmentManager
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
-import android.support.v4.content.LocalBroadcastManager
+import androidx.localbroadcastmanager.content.LocalBroadcastManager
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -53,23 +53,30 @@ class WidgetsListPrefFragment : DialogFragment() {
                         view.findViewById(R.id.widget_pref_info))
             }
 
-            viewHolder.prefIcon?.visibility = if(towerWidget.hasPreferences()) View.VISIBLE else View.GONE
-            viewHolder.prefIcon?.setOnClickListener { towerWidget.getPrefFragment()?.show(fm, "Widget pref dialog") }
+            if (towerWidget != null) {
+                viewHolder.prefIcon?.visibility =
+                    if (towerWidget.hasPreferences()) View.VISIBLE else View.GONE
 
-            viewHolder.prefTitle?.setText(towerWidget.labelResId)
-            viewHolder.prefSummary?.setText(towerWidget.descriptionResId)
+                viewHolder.prefIcon?.setOnClickListener {
+                    towerWidget.getPrefFragment()?.show(fm, "Widget pref dialog")
+                }
 
-            viewHolder.prefCheck?.setOnCheckedChangeListener(null)
-            viewHolder.prefCheck?.isChecked = appPrefs.isWidgetVisible(towerWidget)
-            viewHolder.prefCheck?.setOnCheckedChangeListener { compoundButton, b ->
-                appPrefs.enableWidget(towerWidget, b)
-                lbm.sendBroadcast(Intent(SettingsFragment.ACTION_WIDGET_PREFERENCE_UPDATED)
-                        .putExtra(SettingsFragment.EXTRA_ADD_WIDGET, b)
-                        .putExtra(SettingsFragment.EXTRA_WIDGET_PREF_KEY, towerWidget.prefKey))
+                viewHolder.prefTitle?.setText(towerWidget.labelResId)
+                viewHolder.prefSummary?.setText(towerWidget.descriptionResId)
+
+                viewHolder.prefCheck?.setOnCheckedChangeListener(null)
+                viewHolder.prefCheck?.isChecked = appPrefs.isWidgetVisible(towerWidget)
+                viewHolder.prefCheck?.setOnCheckedChangeListener { compoundButton, b ->
+                    appPrefs.enableWidget(towerWidget, b)
+                    lbm.sendBroadcast(
+                        Intent(SettingsFragment.ACTION_WIDGET_PREFERENCE_UPDATED)
+                            .putExtra(SettingsFragment.EXTRA_ADD_WIDGET, b)
+                            .putExtra(SettingsFragment.EXTRA_WIDGET_PREF_KEY, towerWidget.prefKey)
+                    )
+                }
+
+                viewHolder.prefInfo?.setOnClickListener { viewHolder?.prefCheck?.toggle() }
             }
-
-            viewHolder.prefInfo?.setOnClickListener { viewHolder?.prefCheck?.toggle() }
-
             view.tag = viewHolder
 
             return view

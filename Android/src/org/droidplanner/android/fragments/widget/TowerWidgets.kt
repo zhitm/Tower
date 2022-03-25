@@ -1,8 +1,8 @@
 package org.droidplanner.android.fragments.widget
 
 import android.app.DialogFragment
-import android.support.annotation.IdRes
-import android.support.annotation.StringRes
+import androidx.annotation.IdRes
+import androidx.annotation.StringRes
 import org.droidplanner.android.R
 import org.droidplanner.android.fragments.widget.diagnostics.FullWidgetDiagnostics
 import org.droidplanner.android.fragments.widget.diagnostics.MiniWidgetDiagnostics

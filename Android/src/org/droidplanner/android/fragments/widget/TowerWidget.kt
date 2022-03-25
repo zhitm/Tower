@@ -1,6 +1,6 @@
 package org.droidplanner.android.fragments.widget
 
-import android.support.annotation.IdRes
+import androidx.annotation.IdRes
 import org.droidplanner.android.fragments.helpers.ApiListenerFragment
 
 /**

@@ -1,20 +1,31 @@
 package org.droidplanner.android.activities.helpers;
 
+import android.Manifest;
+import android.app.AlertDialog;
+import android.app.Dialog;
 import android.content.BroadcastReceiver;
 import android.content.ComponentName;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.ServiceConnection;
+import android.content.pm.PackageManager;
 import android.media.AudioManager;
 import android.os.Bundle;
 import android.os.IBinder;
-import android.support.v4.app.FragmentManager;
-import android.support.v4.app.NavUtils;
-import android.support.v4.content.LocalBroadcastManager;
-import android.support.v7.app.ActionBar;
-import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.Toolbar;
+
+import androidx.annotation.NonNull;
+import androidx.core.app.ActivityCompat;
+import androidx.core.content.ContextCompat;
+import androidx.fragment.app.DialogFragment;
+import androidx.fragment.app.FragmentManager;
+import androidx.core.app.NavUtils;
+import androidx.localbroadcastmanager.content.LocalBroadcastManager;
+import androidx.appcompat.app.ActionBar;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.Toolbar;
+
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -91,7 +102,7 @@ public abstract class SuperUI extends AppCompatActivity implements DroidPlannerA
     private VehicleStatusFragment statusFragment;
 
     @Override
-    public void setContentView(int resId){
+    public void setContentView(int resId) {
         super.setContentView(resId);
 
         final int toolbarId = getToolbarId();
@@ -100,7 +111,7 @@ public abstract class SuperUI extends AppCompatActivity implements DroidPlannerA
     }
 
     @Override
-    public void setContentView(View view){
+    public void setContentView(View view) {
         super.setContentView(view);
 
         final int toolbarId = getToolbarId();
@@ -108,8 +119,8 @@ public abstract class SuperUI extends AppCompatActivity implements DroidPlannerA
         initToolbar(toolbar);
     }
 
-    protected void initToolbar(Toolbar toolbar){
-        if(toolbar == null)
+    protected void initToolbar(Toolbar toolbar) {
+        if (toolbar == null)
             return;
 
         setSupportActionBar(toolbar);
@@ -124,15 +135,15 @@ public abstract class SuperUI extends AppCompatActivity implements DroidPlannerA
         addToolbarFragment();
     }
 
-    public void setToolbarTitle(CharSequence title){
-        if(statusFragment == null)
+    public void setToolbarTitle(CharSequence title) {
+        if (statusFragment == null)
             return;
 
         statusFragment.setTitle(title);
     }
 
-    public void setToolbarTitle(int titleResId){
-        if(statusFragment == null)
+    public void setToolbarTitle(int titleResId) {
+        if (statusFragment == null)
             return;
 
         statusFragment.setTitle(getString(titleResId));
@@ -144,15 +155,15 @@ public abstract class SuperUI extends AppCompatActivity implements DroidPlannerA
     }
 
     @Override
-    public void onServiceDisconnected(ComponentName name){
+    public void onServiceDisconnected(ComponentName name) {
 
     }
 
-    protected void addToolbarFragment(){
+    protected void addToolbarFragment() {
         final int toolbarId = getToolbarId();
         final FragmentManager fm = getSupportFragmentManager();
         statusFragment = (VehicleStatusFragment) fm.findFragmentById(toolbarId);
-        if(statusFragment == null){
+        if (statusFragment == null) {
             statusFragment = new VehicleStatusFragment();
             fm.beginTransaction().add(toolbarId, statusFragment).commit();
         }
@@ -172,11 +183,11 @@ public abstract class SuperUI extends AppCompatActivity implements DroidPlannerA
         mAppPrefs = DroidPlannerPrefs.getInstance(context);
         unitSystem = UnitManager.getUnitSystem(context);
 
-		/*
+        /*
          * Used to supplant wake lock acquisition (previously in
-		 * org.droidplanner.android.service .MAVLinkService) as suggested by the
-		 * android android.os.PowerManager#newWakeLock documentation.
-		 */
+         * org.droidplanner.android.service .MAVLinkService) as suggested by the
+         * android android.os.PowerManager#newWakeLock documentation.
+         */
         if (mAppPrefs.keepScreenOn()) {
             getWindow().addFlags(android.view.WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
         }
@@ -251,7 +262,7 @@ public abstract class SuperUI extends AppCompatActivity implements DroidPlannerA
         final MenuItem toggleConnectionItem = menu.findItem(R.id.menu_connect);
 
         Drone drone = dpApp.getDrone();
-        if (drone == null || !drone.isConnected()){
+        if (drone == null || !drone.isConnected()) {
             menu.setGroupEnabled(R.id.menu_group_connected, false);
             menu.setGroupVisible(R.id.menu_group_connected, false);
 
@@ -268,7 +279,7 @@ public abstract class SuperUI extends AppCompatActivity implements DroidPlannerA
         killSwitchItem.setVisible(false);
 
         final boolean isKillEnabled = mAppPrefs.isKillSwitchEnabled();
-        if(killSwitchItem != null && isKillEnabled) {
+        if (killSwitchItem != null && isKillEnabled) {
             CapabilityApi.getApi(drone).checkFeatureSupport(CapabilityApi.FeatureIds.KILL_SWITCH, new CapabilityApi.FeatureSupportListener() {
                 @Override
                 public void onFeatureSupportResult(String s, int i, Bundle bundle) {
@@ -312,7 +323,7 @@ public abstract class SuperUI extends AppCompatActivity implements DroidPlannerA
         final Drone drone = dpApp.getDrone();
         final MissionProxy missionProxy = dpApp.getMissionProxy();
 
-        switch(dialogTag){
+        switch (dialogTag) {
             case MISSION_UPLOAD_CHECK_DIALOG_TAG:
                 missionProxy.addTakeOffAndRTL();
                 missionProxy.sendMissionToAPM(drone);
@@ -325,7 +336,7 @@ public abstract class SuperUI extends AppCompatActivity implements DroidPlannerA
         final Drone drone = dpApp.getDrone();
         final MissionProxy missionProxy = dpApp.getMissionProxy();
 
-        switch(dialogTag){
+        switch (dialogTag) {
             case MISSION_UPLOAD_CHECK_DIALOG_TAG:
                 missionProxy.sendMissionToAPM(drone);
                 break;
@@ -373,7 +384,7 @@ public abstract class SuperUI extends AppCompatActivity implements DroidPlannerA
                             @Override
                             public void onError(int error) {
                                 final int errorMsgId;
-                                switch(error){
+                                switch (error) {
                                     case CommandExecutionError.COMMAND_UNSUPPORTED:
                                         errorMsgId = R.string.error_kill_switch_unsupported;
                                         break;

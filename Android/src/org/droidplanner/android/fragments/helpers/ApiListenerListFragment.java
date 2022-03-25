@@ -1,8 +1,8 @@
 package org.droidplanner.android.fragments.helpers;
 
 import android.app.Activity;
-import android.support.v4.app.ListFragment;
-import android.support.v4.content.LocalBroadcastManager;
+import androidx.fragment.app.ListFragment;
+import androidx.localbroadcastmanager.content.LocalBroadcastManager;
 
 import com.o3dr.android.client.Drone;
 

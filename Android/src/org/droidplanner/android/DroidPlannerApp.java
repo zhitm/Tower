@@ -7,14 +7,14 @@ import android.content.IntentFilter;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
-import android.support.annotation.NonNull;
-import android.support.multidex.MultiDexApplication;
-import android.support.v4.content.LocalBroadcastManager;
+import androidx.annotation.NonNull;
+import androidx.multidex.MultiDexApplication;
+import androidx.localbroadcastmanager.content.LocalBroadcastManager;
 import android.text.TextUtils;
 import android.util.Log;
 import android.widget.Toast;
 
-import com.crashlytics.android.Crashlytics;
+//import com.crashlytics.android.Crashlytics;
 import com.o3dr.android.client.ControlTower;
 import com.o3dr.android.client.Drone;
 import com.o3dr.android.client.apis.VehicleApi;
@@ -26,7 +26,7 @@ import com.o3dr.services.android.lib.drone.connection.ConnectionParameter;
 import com.o3dr.services.android.lib.drone.connection.ConnectionType;
 import com.o3dr.services.android.lib.gcs.link.LinkConnectionStatus;
 import com.o3dr.services.android.lib.model.AbstractCommandListener;
-import com.squareup.leakcanary.LeakCanary;
+//import com.squareup.leakcanary.LeakCanary;
 
 import org.droidplanner.android.activities.helpers.BluetoothDevicesActivity;
 import org.droidplanner.android.droneshare.UploaderService;
@@ -44,7 +44,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicBoolean;
 
-import io.fabric.sdk.android.Fabric;
+//import io.fabric.sdk.android.Fabric;
 import timber.log.Timber;
 
 public class DroidPlannerApp extends MultiDexApplication implements DroneListener, TowerListener, LinkListener {
@@ -169,7 +169,7 @@ public class DroidPlannerApp extends MultiDexApplication implements DroneListene
 
     private void initLoggingAndAnalytics(){
         //Init leak canary
-        LeakCanary.install(this);
+//        LeakCanary.install(this);
 
         final Context context = getApplicationContext();
 
@@ -192,7 +192,7 @@ public class DroidPlannerApp extends MultiDexApplication implements DroneListene
         }
 
         if(BuildConfig.ENABLE_CRASHLYTICS) {
-            Fabric.with(context, new Crashlytics());
+//            Fabric.with(context, new Crashlytics());
         }
     }
 

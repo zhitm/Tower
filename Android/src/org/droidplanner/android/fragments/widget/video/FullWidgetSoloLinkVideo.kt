@@ -11,7 +11,10 @@ import android.net.Uri
 import android.os.Bundle
 import android.os.Handler
 import android.view.*
+import android.widget.ImageView
+import android.widget.LinearLayout
 import android.widget.TextView
+import com.google.android.material.floatingactionbutton.FloatingActionButton
 import com.o3dr.android.client.apis.GimbalApi
 import com.o3dr.android.client.apis.solo.SoloCameraApi
 import com.o3dr.services.android.lib.drone.attribute.AttributeEvent
@@ -34,7 +37,8 @@ public class FullWidgetSoloLinkVideo : BaseVideoWidget() {
     companion object {
         private val filter = initFilter()
 
-        @JvmStatic protected val TAG = FullWidgetSoloLinkVideo::class.java.simpleName
+        @JvmStatic
+        protected val TAG = FullWidgetSoloLinkVideo::class.java.simpleName
 
         private fun initFilter(): IntentFilter {
             val temp = IntentFilter()
@@ -62,7 +66,7 @@ public class FullWidgetSoloLinkVideo : BaseVideoWidget() {
 
     }
 
-    private val resetGimbalControl = object: Runnable {
+    private val resetGimbalControl = object : Runnable {
 
         override fun run() {
             if (drone != null) {
@@ -85,23 +89,23 @@ public class FullWidgetSoloLinkVideo : BaseVideoWidget() {
     }
 
     private val widgetButtonBar by lazy(LazyThreadSafetyMode.NONE) {
-        view?.findViewById(R.id.widget_button_bar)
+        view?.findViewById<LinearLayout>(R.id.widget_button_bar)
     }
 
     private val takePhotoButton by lazy(LazyThreadSafetyMode.NONE) {
-        view?.findViewById(R.id.sololink_take_picture_button)
+        view?.findViewById<FloatingActionButton>(R.id.sololink_take_picture_button)
     }
 
     private val recordVideo by lazy(LazyThreadSafetyMode.NONE) {
-        view?.findViewById(R.id.sololink_record_video_button)
+        view?.findViewById<FloatingActionButton>(R.id.sololink_record_video_button)
     }
 
     private val fpvVideo by lazy(LazyThreadSafetyMode.NONE) {
-        view?.findViewById(R.id.sololink_vr_video_button)
+        view?.findViewById<FloatingActionButton>(R.id.sololink_vr_video_button)
     }
 
     private val touchCircleImage by lazy(LazyThreadSafetyMode.NONE) {
-        view?.findViewById(R.id.sololink_gimbal_joystick)
+        view?.findViewById<ImageView>(R.id.sololink_gimbal_joystick)
     }
 
     private val orientationListener = object : GimbalApi.GimbalOrientationListener {
@@ -113,7 +117,11 @@ public class FullWidgetSoloLinkVideo : BaseVideoWidget() {
         }
     }
 
-    override fun onCreateView(inflater: LayoutInflater?, container: ViewGroup?, savedInstanceState: Bundle?): View? {
+    override fun onCreateView(
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View? {
         return inflater?.inflate(R.layout.fragment_widget_sololink_video, container, false)
     }
 
@@ -121,22 +129,30 @@ public class FullWidgetSoloLinkVideo : BaseVideoWidget() {
         super.onViewCreated(view, savedInstanceState)
 
         textureView?.surfaceTextureListener = object : TextureView.SurfaceTextureListener {
-            override fun onSurfaceTextureAvailable(surface: SurfaceTexture?, width: Int, height: Int) {
+            override fun onSurfaceTextureAvailable(
+                surface: SurfaceTexture,
+                width: Int,
+                height: Int
+            ) {
                 adjustAspectRatio(textureView as TextureView);
                 surfaceRef = Surface(surface)
                 tryStreamingVideo()
             }
 
-            override fun onSurfaceTextureDestroyed(surface: SurfaceTexture?): Boolean {
+            override fun onSurfaceTextureDestroyed(surface: SurfaceTexture): Boolean {
                 surfaceRef = null
                 tryStoppingVideoStream()
                 return true
             }
 
-            override fun onSurfaceTextureSizeChanged(surface: SurfaceTexture?, width: Int, height: Int) {
+            override fun onSurfaceTextureSizeChanged(
+                surface: SurfaceTexture,
+                width: Int,
+                height: Int
+            ) {
             }
 
-            override fun onSurfaceTextureUpdated(surface: SurfaceTexture?) {
+            override fun onSurfaceTextureUpdated(surface: SurfaceTexture) {
             }
 
         }
@@ -174,32 +190,35 @@ public class FullWidgetSoloLinkVideo : BaseVideoWidget() {
         if (launchIntent == null) {
 
             //Search for the dronepro app in the play store
-            launchIntent = Intent(Intent.ACTION_VIEW).addFlags(Intent.FLAG_ACTIVITY_NEW_TASK).setData(Uri.parse("market://details?id=" + appId))
+            launchIntent = Intent(Intent.ACTION_VIEW).addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+                .setData(Uri.parse("market://details?id=" + appId))
 
             if (pm.resolveActivity(launchIntent, PackageManager.MATCH_DEFAULT_ONLY) == null) {
-                launchIntent = Intent(Intent.ACTION_VIEW).addFlags(Intent.FLAG_ACTIVITY_NEW_TASK).setData(Uri.parse("https://play.google.com/store/apps/details?id=" + appId))
+                launchIntent = Intent(Intent.ACTION_VIEW).addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+                    .setData(Uri.parse("https://play.google.com/store/apps/details?id=" + appId))
             }
 
             startActivity(launchIntent)
 
         } else {
-            if(fpvLoader == null) {
+            if (fpvLoader == null) {
                 launchIntent.putExtra("meavydev.DronePro.launchFPV", "Tower")
 
-                fpvLoader = LoadingDialog.newInstance("Starting FPV...", object : LoadingDialog.Listener {
-                    override fun onStarted() {
-                        handler.postDelayed( {startActivity(launchIntent) }, 500L)
-                    }
+                fpvLoader =
+                    LoadingDialog.newInstance("Starting FPV...", object : LoadingDialog.Listener {
+                        override fun onStarted() {
+                            handler.postDelayed({ startActivity(launchIntent) }, 500L)
+                        }
 
-                    override fun onCancel() {
-                        fpvLoader = null
-                    }
+                        override fun onCancel() {
+                            fpvLoader = null
+                        }
 
-                    override fun onDismiss() {
-                        fpvLoader = null
-                    }
+                        override fun onDismiss() {
+                            fpvLoader = null
+                        }
 
-                });
+                    });
                 fpvLoader?.show(childFragmentManager, "FPV launch dialog")
             }
         }
@@ -221,7 +240,7 @@ public class FullWidgetSoloLinkVideo : BaseVideoWidget() {
         tryStoppingVideoStream()
     }
 
-    override fun onStop(){
+    override fun onStop() {
         super.onStop()
         fpvLoader?.dismiss()
         fpvLoader = null
@@ -324,10 +343,25 @@ public class FullWidgetSoloLinkVideo : BaseVideoWidget() {
                         val pitchDegree = (degreeIntervals * (startY - event.y)).toFloat()
                         val pitchTo = orientation.getPitch() + pitchDegree
 
-                        Timber.d("Pitch %f roll %f yaw %f", orientation.getPitch(), orientation.getRoll(), rotateTo)
-                        Timber.d("degreeIntervals: %f pitchDegree: %f, pitchTo: %f", degreeIntervals, pitchDegree, pitchTo)
+                        Timber.d(
+                            "Pitch %f roll %f yaw %f",
+                            orientation.getPitch(),
+                            orientation.getRoll(),
+                            rotateTo
+                        )
+                        Timber.d(
+                            "degreeIntervals: %f pitchDegree: %f, pitchTo: %f",
+                            degreeIntervals,
+                            pitchDegree,
+                            pitchTo
+                        )
 
-                        GimbalApi.getApi(drone).updateGimbalOrientation(pitchTo, orientation.getRoll(), rotateTo, orientationListener)
+                        GimbalApi.getApi(drone).updateGimbalOrientation(
+                            pitchTo,
+                            orientation.getRoll(),
+                            rotateTo,
+                            orientationListener
+                        )
                     }
                 }
 
@@ -372,8 +406,9 @@ public class FullWidgetSoloLinkVideo : BaseVideoWidget() {
             widgetButtonBar?.visibility = View.VISIBLE
 
             //Update the video recording button
-            recordVideo?.isActivated = goproState.captureMode == SoloGoproConstants.CAPTURE_MODE_VIDEO
-                    && goproState.recording == SoloGoproConstants.RECORDING_ON
+            recordVideo?.isActivated =
+                goproState.captureMode == SoloGoproConstants.CAPTURE_MODE_VIDEO
+                        && goproState.recording == SoloGoproConstants.RECORDING_ON
         }
     }
 

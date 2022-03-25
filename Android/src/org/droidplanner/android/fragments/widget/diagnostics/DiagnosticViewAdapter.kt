@@ -1,9 +1,9 @@
 package org.droidplanner.android.fragments.widget.diagnostics
 
 import android.content.Context
-import android.support.v4.app.Fragment
-import android.support.v4.app.FragmentManager
-import android.support.v4.app.FragmentPagerAdapter
+import androidx.fragment.app.Fragment
+import androidx.fragment.app.FragmentManager
+import androidx.fragment.app.FragmentPagerAdapter
 
 /**
  * Created by Fredia Huya-Kouadio on 9/15/15.

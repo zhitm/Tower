@@ -43,7 +43,11 @@ public class MiniWidgetSoloLinkVideo : BaseVideoWidget() {
         view?.findViewById(R.id.sololink_video_status) as TextView?
     }
 
-    override fun onCreateView(inflater: LayoutInflater?, container: ViewGroup?, savedInstanceState: Bundle?): View? {
+    override fun onCreateView(
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View? {
         return inflater?.inflate(R.layout.fragment_mini_widget_solo_video, container, false)
     }
 
@@ -51,23 +55,31 @@ public class MiniWidgetSoloLinkVideo : BaseVideoWidget() {
         super.onViewCreated(view, savedInstanceState)
 
         textureView?.surfaceTextureListener = object : TextureView.SurfaceTextureListener {
-            override fun onSurfaceTextureAvailable(surface: SurfaceTexture?, width: Int, height: Int) {
+            override fun onSurfaceTextureAvailable(
+                surface: SurfaceTexture,
+                width: Int,
+                height: Int
+            ) {
                 adjustAspectRatio(textureView as TextureView);
                 surfaceRef = Surface(surface)
                 tryStreamingVideo()
             }
 
-            override fun onSurfaceTextureDestroyed(surface: SurfaceTexture?): Boolean {
+            override fun onSurfaceTextureDestroyed(surface: SurfaceTexture): Boolean {
                 surfaceRef = null
                 tryStoppingVideoStream()
                 return true
             }
 
-            override fun onSurfaceTextureSizeChanged(surface: SurfaceTexture?, width: Int, height: Int) {
+            override fun onSurfaceTextureSizeChanged(
+                surface: SurfaceTexture,
+                width: Int,
+                height: Int
+            ) {
 
             }
 
-            override fun onSurfaceTextureUpdated(surface: SurfaceTexture?) {
+            override fun onSurfaceTextureUpdated(surface: SurfaceTexture) {
 
             }
 

@@ -3,7 +3,7 @@ package org.droidplanner.android.utils.sound;
 import android.content.Context;
 import android.media.AudioManager;
 import android.media.SoundPool;
-import android.support.annotation.IntDef;
+import androidx.annotation.IntDef;
 import android.util.SparseIntArray;
 
 import org.droidplanner.android.R;

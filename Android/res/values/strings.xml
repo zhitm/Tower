@@ -681,4 +681,6 @@
     <string name="warning_unable_to_open_web_url">No app was found to handle this request. Please install a web broawer.</string>
     <string name="warning_invalid_speed">Invalid speed value</string>
     <string name="warning_invalid_altitude">Invalid altitude value</string>
+    <string name="permission_rationale_location">This app needs location permission for work</string>
+    <string name="permission_required_toast">Please provide location permission, app can\'t work without it</string>
 </resources>

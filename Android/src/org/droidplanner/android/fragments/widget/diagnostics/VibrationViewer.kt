@@ -2,7 +2,7 @@ package org.droidplanner.android.fragments.widget.diagnostics
 
 import android.os.Bundle
 import android.os.Handler
-import android.support.annotation.StringRes
+import androidx.annotation.StringRes
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -30,7 +30,11 @@ public class VibrationViewer : GraphDiagnosticViewer() {
     private val lastClippingValues = arrayOf(-1L, -1L, -1L)
     private val clippingViews: Array<TextView?> = arrayOf(null, null, null)
 
-    override fun onCreateView(inflater: LayoutInflater?, container: ViewGroup?, savedInstanceState: Bundle?): View?{
+    override fun onCreateView(
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View? {
         return inflater?.inflate(R.layout.fragment_vibration_viewer, container, false)
     }
 
@@ -120,7 +124,7 @@ public class VibrationViewer : GraphDiagnosticViewer() {
 
             val lastClippingValue = lastClippingValues[index]
             if(lastClippingValue != -1L && value > lastClippingValue){
-                handler.removeCallbacks(null)
+                handler.removeCallbacksAndMessages(null)
 
                 //Update the clipping view background temporarily
                 clippingView?.setBackgroundColor(dangerStatusColor)

@@ -4,7 +4,7 @@ import android.app.Activity
 import android.graphics.Color
 import android.graphics.drawable.Drawable
 import android.os.Bundle
-import android.support.v4.view.ViewPager
+import androidx.viewpager.widget.ViewPager
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -34,12 +34,16 @@ import kotlin.properties.Delegates
 public class FullWidgetDiagnostics : TowerWidget(){
 
     private val viewAdapter by lazy(LazyThreadSafetyMode.NONE) {
-        DiagnosticViewAdapter(context, childFragmentManager)
+        context?.let { DiagnosticViewAdapter(it, childFragmentManager) }
     }
 
     private var tabPageIndicator: TabPageIndicator? = null
 
-    override fun onCreateView(inflater: LayoutInflater?, container: ViewGroup?, savedInstanceState: Bundle?): View? {
+    override fun onCreateView(
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View? {
         return inflater?.inflate(R.layout.fragment_full_widget_diagnostics, container, false)
     }
 
@@ -61,7 +65,7 @@ public class FullWidgetDiagnostics : TowerWidget(){
     override fun onApiDisconnected() {}
 
     public fun setAdapterViewTitle(position: Int, title: CharSequence){
-        viewAdapter.setViewTitles(position, title)
+        viewAdapter?.setViewTitles(position, title)
         tabPageIndicator?.notifyDataSetChanged()
     }
 }

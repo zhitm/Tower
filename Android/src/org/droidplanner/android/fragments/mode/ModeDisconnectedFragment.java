@@ -5,12 +5,12 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.os.Bundle;
-import android.support.v4.app.DialogFragment;
-import android.support.v4.content.LocalBroadcastManager;
-import android.support.v7.preference.Preference;
-import android.support.v7.preference.PreferenceCategory;
-import android.support.v7.preference.PreferenceFragmentCompat;
-import android.support.v7.preference.PreferenceScreen;
+import androidx.fragment.app.DialogFragment;
+import androidx.localbroadcastmanager.content.LocalBroadcastManager;
+import androidx.preference.Preference;
+import androidx.preference.PreferenceCategory;
+import androidx.preference.PreferenceFragmentCompat;
+import androidx.preference.PreferenceScreen;
 import android.text.TextUtils;
 
 import com.o3dr.services.android.lib.drone.connection.ConnectionType;
@@ -80,7 +80,7 @@ public class ModeDisconnectedFragment extends PreferenceFragmentCompat {
             if (dialogFragment == null) {
                 dialogFragment = ClearBTPreferenceFragmentCompat.newInstance(preference);
                 dialogFragment.setTargetFragment(this, 0);
-                dialogFragment.show(getFragmentManager(), "android.support.v7.preference.PreferenceFragment.DIALOG");
+                dialogFragment.show(getFragmentManager(), "androidx.preference.PreferenceFragment.DIALOG");
             }
         } else {
             super.onDisplayPreferenceDialog(preference);
@@ -128,7 +128,7 @@ public class ModeDisconnectedFragment extends PreferenceFragmentCompat {
 	}
 
     private DialogFragment getDialogFragment(){
-        return (DialogFragment) getFragmentManager().findFragmentByTag("android.support.v7.preference.PreferenceFragment.DIALOG");
+        return (DialogFragment) getFragmentManager().findFragmentByTag("androidx.preference.PreferenceFragment.DIALOG");
     }
 
 	private void hideAllPrefs(){

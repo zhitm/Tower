@@ -58,14 +58,18 @@ public class MiniWidgetFlightTimer : TowerWidget(), SupportYesNoDialog.Listener 
 
     private var flightTimer : TextView? = null
 
-    override fun onCreateView(inflater: LayoutInflater?, container: ViewGroup?, savedInstanceState: Bundle?): View?{
+    override fun onCreateView(
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View? {
         return inflater?.inflate(R.layout.fragment_mini_widget_flight_timer, container, false)
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?){
         super.onViewCreated(view, savedInstanceState)
 
-        val context = activity.applicationContext
+        val context = activity!!.applicationContext
 
         flightTimer = view.findViewById(R.id.flight_timer) as TextView?
         flightTimer?.setOnClickListener {

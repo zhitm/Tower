@@ -8,8 +8,8 @@ import android.content.Intent;
 import android.content.IntentFilter;
 import android.os.Build;
 import android.os.Bundle;
-import android.support.design.widget.Snackbar;
-import android.support.v7.widget.SearchView;
+import com.google.android.material.snackbar.Snackbar;
+import androidx.appcompat.widget.SearchView;
 import android.text.TextUtils;
 import android.util.TypedValue;
 import android.view.LayoutInflater;
@@ -201,7 +201,7 @@ ParamsFragment extends ApiListenerListFragment implements
                 return true;
             }
         });
-        searchButton = searchParams.findViewById(android.support.v7.appcompat.R.id.search_button);
+        searchButton = searchParams.findViewById(R.id.search_button);
         searchParams.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {

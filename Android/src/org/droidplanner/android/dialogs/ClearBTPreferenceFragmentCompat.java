@@ -1,8 +1,8 @@
 package org.droidplanner.android.dialogs;
 
 import android.os.Bundle;
-import android.support.v7.preference.Preference;
-import android.support.v7.preference.PreferenceDialogFragmentCompat;
+import androidx.preference.Preference;
+import androidx.preference.PreferenceDialogFragmentCompat;
 
 import org.droidplanner.android.utils.prefs.DroidPlannerPrefs;
 

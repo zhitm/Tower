@@ -2,7 +2,7 @@ package org.droidplanner.android.fragments.widget.diagnostics
 
 import android.graphics.drawable.Drawable
 import android.os.Bundle
-import android.support.annotation.StringRes
+import androidx.annotation.StringRes
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -36,7 +36,11 @@ public class EkfFlagsViewer : BaseWidgetDiagnostic() {
         resources?.getDrawable(R.drawable.ic_help_orange_500_24dp)
     }
 
-    override fun onCreateView(inflater: LayoutInflater?, container: ViewGroup?, savedInstanceState: Bundle?): View? {
+    override fun onCreateView(
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View? {
         return inflater?.inflate(R.layout.fragment_ekf_flags_viewer, container, false)
     }
 

@@ -80,7 +80,8 @@
         <activity
             android:name=".activities.FlightActivity"
             android:launchMode="singleTask"
-            android:theme="@style/CustomActionBarTheme.Transparent">
+            android:theme="@style/CustomActionBarTheme.Transparent"
+            android:exported="true">
 
             <!-- Launcher Intent -->
             <intent-filter>
@@ -94,7 +95,8 @@
             android:label="@string/editor"
             android:launchMode="singleTop"
             android:theme="@style/CustomActionBarTheme.Transparent"
-            android:windowSoftInputMode="adjustNothing">
+            android:windowSoftInputMode="adjustNothing"
+            android:exported="true">
 
             <!-- Intent for opening mission files -->
             <intent-filter>
@@ -154,7 +156,8 @@
 
         <receiver
             android:name=".droneshare.NetworkConnectivityReceiver"
-            android:enabled="false">
+            android:enabled="false"
+            android:exported="true">
             <intent-filter>
                 <action android:name="android.net.conn.CONNECTIVITY_CHANGE"/>
             </intent-filter>

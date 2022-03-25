@@ -16,7 +16,7 @@
         android:layout_alignParentTop="true"
         style="@android:style/Widget.Holo.Light.ProgressBar.Horizontal"/>
 
-    <android.support.v7.widget.SearchView
+    <androidx.appcompat.widget.SearchView
         android:layout_width="match_parent"
         android:layout_height="56dp"
         android:layout_marginStart="20dp"

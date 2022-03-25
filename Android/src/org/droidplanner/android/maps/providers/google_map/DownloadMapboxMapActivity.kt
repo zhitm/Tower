@@ -1,11 +1,12 @@
 package org.droidplanner.android.maps.providers.google_map
 
 import android.os.Bundle
-import android.support.v7.app.AppCompatActivity
+import androidx.appcompat.app.AppCompatActivity
 import android.view.View
 import android.widget.ProgressBar
 import android.widget.Toast
 import com.google.android.gms.maps.model.CameraPosition
+import com.google.android.material.floatingactionbutton.FloatingActionButton
 import org.droidplanner.android.R
 import org.droidplanner.android.maps.GoogleMapFragment
 import org.droidplanner.android.maps.providers.google_map.tiles.mapbox.offline.MapDownloader
@@ -106,7 +107,7 @@ class DownloadMapboxMapActivity : AppCompatActivity() {
         downloadMapFragment = fm.findFragmentById(R.id.map_container) as DownloadMapboxMapFragment?
         if (downloadMapFragment == null) {
             downloadMapFragment = DownloadMapboxMapFragment()
-            fm.beginTransaction().add(R.id.map_container, downloadMapFragment).commit()
+            fm.beginTransaction().add(R.id.map_container, downloadMapFragment!!).commit()
         }
 
         instructionsContainer = findViewById(R.id.download_map_instructions)
@@ -119,14 +120,14 @@ class DownloadMapboxMapActivity : AppCompatActivity() {
 
         downloadProgressBar = findViewById(R.id.map_download_progress_bar) as ProgressBar?
 
-        val goToMyLocation = findViewById(R.id.my_location_button)
+        val goToMyLocation = findViewById<FloatingActionButton>(R.id.my_location_button)
         goToMyLocation?.setOnClickListener { downloadMapFragment?.goToMyLocation() }
         goToMyLocation?.setOnLongClickListener {
             downloadMapFragment?.setAutoPanMode(AutoPanMode.USER)
             true
         }
 
-        val goToDroneLocation = findViewById(R.id.drone_location_button)
+        val goToDroneLocation = findViewById<FloatingActionButton>(R.id.drone_location_button)
         goToDroneLocation?.setOnClickListener { downloadMapFragment?.goToDroneLocation() }
         goToDroneLocation?.setOnLongClickListener {
             downloadMapFragment?.setAutoPanMode(AutoPanMode.DRONE)

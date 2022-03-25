@@ -31,7 +31,7 @@
         android:visibility="gone"
         tools:visibility="visible">
 
-        <android.support.design.widget.FloatingActionButton
+        <com.google.android.material.floatingactionbutton.FloatingActionButton
             android:id="@+id/sololink_take_picture_button"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -39,7 +39,7 @@
             android:src="@drawable/ic_camera_drawable"
             android:text="@string/label_photo" />
 
-        <android.support.design.widget.FloatingActionButton
+        <com.google.android.material.floatingactionbutton.FloatingActionButton
             android:id="@+id/sololink_record_video_button"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -47,7 +47,7 @@
             android:src="@drawable/on_off_videocam"
             android:text="@string/label_record" />
 
-        <android.support.design.widget.FloatingActionButton
+        <com.google.android.material.floatingactionbutton.FloatingActionButton
             android:id="@+id/sololink_vr_video_button"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"

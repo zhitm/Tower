@@ -6,7 +6,7 @@ import android.content.SharedPreferences
 import android.net.Uri
 import android.os.Bundle
 import android.preference.*
-import android.support.v4.util.ArrayMap
+import androidx.collection.ArrayMap
 import android.text.TextUtils
 import android.widget.Toast
 import com.google.android.gms.maps.GoogleMap
@@ -66,6 +66,7 @@ class GoogleMapPrefFragment : MapProviderPreferences(), EditInputDialog.Listener
         fun getArcGISMapType(context: Context): String {
             val sharedPref = PreferenceManager.getDefaultSharedPreferences(context)
             return sharedPref.getString(PREF_ARCGIS_MAP_TYPE, context.getString(DEFAULT_ARCGIS_MAP_TYPE))
+                .toString()
         }
 
         fun getMapType(context: Context?): Int {
@@ -89,7 +90,7 @@ class GoogleMapPrefFragment : MapProviderPreferences(), EditInputDialog.Listener
             var tileProvider = DEFAULT_TILE_PROVIDER
             context?.let {
                 val sharedPref = PreferenceManager.getDefaultSharedPreferences(context)
-                tileProvider = sharedPref.getString(PREF_TILE_PROVIDERS, tileProvider)
+                tileProvider = sharedPref.getString(PREF_TILE_PROVIDERS, tileProvider).toString()
             }
 
             return tileProvider
@@ -122,7 +123,7 @@ class GoogleMapPrefFragment : MapProviderPreferences(), EditInputDialog.Listener
         fun getMapboxId(context: Context?): String {
             return if(context == null) "" else{
                 val sharedPref = PreferenceManager.getDefaultSharedPreferences(context)
-                sharedPref.getString(PREF_MAPBOX_ID, "")
+                sharedPref.getString(PREF_MAPBOX_ID, "").toString()
             }
         }
 
@@ -136,7 +137,7 @@ class GoogleMapPrefFragment : MapProviderPreferences(), EditInputDialog.Listener
         fun getMapboxAccessToken(context: Context?): String {
             return if(context == null) "" else{
                 val sharedPref = PreferenceManager.getDefaultSharedPreferences(context)
-                sharedPref.getString(PREF_MAPBOX_ACCESS_TOKEN, "")
+                sharedPref.getString(PREF_MAPBOX_ACCESS_TOKEN, "").toString()
             }
         }
 
@@ -289,7 +290,7 @@ class GoogleMapPrefFragment : MapProviderPreferences(), EditInputDialog.Listener
                     }
             }
 
-            toggleTileProviderPrefs(tileProvider)
+            tileProvider?.let { toggleTileProviderPrefs(it) }
         }
     }
 

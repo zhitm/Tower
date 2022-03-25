@@ -1,11 +1,13 @@
 package org.droidplanner.android.tlog.viewers
 
+import android.annotation.SuppressLint
 import android.content.Intent
 import android.os.Bundle
-import android.support.design.widget.FloatingActionButton
-import android.support.v7.widget.LinearLayoutManager
-import android.support.v7.widget.RecyclerView
+import com.google.android.material.floatingactionbutton.FloatingActionButton
+import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 import android.view.*
+import android.widget.TextView
 import android.widget.Toast
 import com.MAVLink.common.msg_global_position_int
 import com.o3dr.android.client.utils.data.tlog.TLogParser
@@ -48,11 +50,11 @@ class TLogPositionViewer : TLogViewer(), TLogEventListener {
     private var tlogPositionAdapter : TLogPositionEventAdapter? = null
 
     private val noDataView by lazy {
-        getView()?.findViewById(R.id.no_data_message)
+        getView()?.findViewById<TextView>(R.id.no_data_message)
     }
 
     private val loadingData by lazy {
-        getView()?.findViewById(R.id.loading_tlog_data)
+        getView()?.findViewById<TextView>(R.id.loading_tlog_data)
     }
 
     private val eventsView by lazy {
@@ -78,6 +80,7 @@ class TLogPositionViewer : TLogViewer(), TLogEventListener {
         return inflater.inflate(R.layout.fragment_tlog_position_viewer, container, false)
     }
 
+    @SuppressLint("RestrictedApi")
     override fun onViewCreated(view: View, savedInstanceState: Bundle?){
         super.onViewCreated(view, savedInstanceState)
 
@@ -87,7 +90,7 @@ class TLogPositionViewer : TLogViewer(), TLogEventListener {
         tlogEventMap = fm.findFragmentById(R.id.tlog_map_container) as TLogEventMapFragment?
         if(tlogEventMap == null){
             tlogEventMap = TLogEventMapFragment()
-            fm.beginTransaction().add(R.id.tlog_map_container, tlogEventMap).commit()
+            fm.beginTransaction().add(R.id.tlog_map_container, tlogEventMap!!).commit()
         }
 
         eventsView?.apply {
@@ -95,7 +98,7 @@ class TLogPositionViewer : TLogViewer(), TLogEventListener {
             layoutManager = LinearLayoutManager(getContext(), LinearLayoutManager.HORIZONTAL, false)
         }
 
-        tlogPositionAdapter = TLogPositionEventAdapter(context, eventsView!!)
+        tlogPositionAdapter = context?.let { TLogPositionEventAdapter(it, eventsView!!) }
         eventsView?.adapter = tlogPositionAdapter
 
         fastScroller.setRecyclerView(eventsView!!)
@@ -106,10 +109,10 @@ class TLogPositionViewer : TLogViewer(), TLogEventListener {
             tlogEventMap?.goToMyLocation();
         }
 
-        view.findViewById(R.id.drone_location_button)?.visibility = View.GONE
+        view.findViewById<FloatingActionButton>(R.id.drone_location_button)?.visibility = View.GONE
 
         // Setup the zoom to fit button
-        view.findViewById(R.id.zoom_to_fit_button)?.apply {
+        view.findViewById<FloatingActionButton>(R.id.zoom_to_fit_button)?.apply {
             visibility = View.VISIBLE
             setOnClickListener {
                 tlogEventMap?.zoomToFit()
