@@ -56,10 +56,14 @@
         android:theme="@style/CustomActionBarTheme"
         android:windowSoftInputMode="adjustPan">
 
-        <!-- You must insert your own Google Maps for Android API v2 key in here. -->
+        <!-- You must insert your own Google Maps for Android API v2 key in here.
+                    android:name="com.google.android.maps.v2.API_KEY"
+-->
+        <uses-library android:name="org.apache.http.legacy" android:required="false" />
+
         <meta-data
-            android:name="com.google.android.maps.v2.API_KEY"
-            android:value="AIzaSyA2oC6zsx-Ir4be8bWFWrAej7FcKdrWGdA"/>
+            android:name="com.google.android.geo.API_KEY"
+            android:value="AIzaSyBl81YeVMbihIfjwXLU92Z0fNxq4hoVyf0"/>
         <meta-data
             android:name="com.google.android.gms.version"
             android:value="@integer/google_play_services_version"/>
