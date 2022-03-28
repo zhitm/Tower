@@ -10,10 +10,12 @@ import androidx.fragment.app.DialogFragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
 
+import org.droidplanner.android.dialogs.SelectionListDialog;
 import org.droidplanner.android.utils.prefs.DroidPlannerPrefs;
 
 import java.io.IOException;
 import java.io.Reader;
+import java.lang.reflect.Modifier;
 import java.util.Locale;
 import java.util.Set;
 
@@ -62,9 +64,15 @@ public class Utils {
 		return sb.toString();
 	}
 
-	public static void showDialog(DialogFragment dialog, FragmentManager fragmentManager, String tag, boolean allowStateLoss) {
+	public static void showDialog(SelectionListDialog dialog, FragmentManager fragmentManager, String tag, boolean allowStateLoss) {
 		if (allowStateLoss) {
 			final FragmentTransaction transaction = fragmentManager.beginTransaction();
+			final Class fragmentClass = dialog.getClass();
+			final int modifiers = fragmentClass.getModifiers();
+			System.out.println(fragmentClass.isAnonymousClass());
+			System.out.println(!Modifier.isPublic(modifiers));
+			System.out.println(fragmentClass.isMemberClass());
+			System.out.println(!Modifier.isStatic(modifiers));
 			transaction.add(dialog, tag);
 			transaction.commitAllowingStateLoss();
 		} else {

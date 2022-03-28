@@ -20,7 +20,7 @@ import org.droidplanner.android.utils.analytics.GAUtils
 /**
  * Created by Fredia Huya-Kouadio on 9/25/15.
  */
-public class FlightModeAdapter(context: Context, val drone: Drone) : SelectionListAdapter<VehicleMode>(context) {
+class FlightModeAdapter(context: Context, val drone: Drone) : SelectionListAdapter<VehicleMode>(context) {
 
     private var selectedMode: VehicleMode
     private val flightModes : List<VehicleMode>
@@ -43,21 +43,19 @@ public class FlightModeAdapter(context: Context, val drone: Drone) : SelectionLi
         val holder = (containerView.tag as ViewHolder?) ?: ViewHolder(containerView.findViewById(R.id.item_selectable_option) as TextView,
                 containerView.findViewById(R.id.item_selectable_check) as RadioButton)
 
-        val clickListener = object : View.OnClickListener {
-            override fun onClick(v: View?) {
-                if (drone.isConnected) {
-                    selectedMode = vehicleMode
+        val clickListener = View.OnClickListener {
+            if (drone.isConnected) {
+                selectedMode = vehicleMode
 
-                    holder.checkView.isChecked = true
+                holder.checkView.isChecked = true
 
-                    VehicleApi.getApi(drone).setVehicleMode(vehicleMode)
+                VehicleApi.getApi(drone).setVehicleMode(vehicleMode)
 
-                    //Record the attempt to change flight modes
-                    val eventBuilder = HitBuilders.EventBuilder().setCategory(GAUtils.Category.FLIGHT).setAction("Flight mode changed").setLabel(vehicleMode.label)
-                    GAUtils.sendEvent(eventBuilder)
+                //Record the attempt to change flight modes
+                val eventBuilder = HitBuilders.EventBuilder().setCategory(GAUtils.Category.FLIGHT).setAction("Flight mode changed").setLabel(vehicleMode.label)
+                GAUtils.sendEvent(eventBuilder)
 
-                    listener?.onSelection()
-                }
+                listener?.onSelection()
             }
         }
 

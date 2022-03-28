@@ -26,6 +26,8 @@ import com.o3dr.services.android.lib.util.MathUtils;
 
 import org.beyene.sius.unit.length.LengthUnit;
 import org.droidplanner.android.R;
+import org.droidplanner.android.dialogs.FlightModeSelectionListDialog;
+import org.droidplanner.android.dialogs.ReturnToHomeSelectionListDialog;
 import org.droidplanner.android.dialogs.SelectionListDialog;
 import org.droidplanner.android.fragments.SettingsFragment;
 import org.droidplanner.android.fragments.helpers.ApiListenerFragment;
@@ -162,7 +164,7 @@ public class ActionBarTelemFragment extends ApiListenerFragment {
             @Override
             public void onClick(View v) {
                 //Launch dialog to allow the user to select between rtl and rtm
-                final SelectionListDialog selectionDialog = SelectionListDialog.newInstance(new ReturnToHomeAdapter(context, getDrone(), appPrefs));
+                final ReturnToHomeSelectionListDialog selectionDialog = new ReturnToHomeSelectionListDialog(new ReturnToHomeAdapter(context, getDrone(), appPrefs));
                 Utils.showDialog(selectionDialog, getChildFragmentManager(), "Return to home type", true);
             }
         });
@@ -209,7 +211,7 @@ public class ActionBarTelemFragment extends ApiListenerFragment {
                 //Launch dialog to allow the user to select vehicle modes
                 final Drone drone = getDrone();
 
-                final SelectionListDialog selectionDialog = SelectionListDialog.newInstance(new FlightModeAdapter(context, drone));
+                final FlightModeSelectionListDialog selectionDialog = new FlightModeSelectionListDialog(new FlightModeAdapter(context, drone));
                 Utils.showDialog(selectionDialog, getChildFragmentManager(), "Flight modes selection", true);
             }
         });
