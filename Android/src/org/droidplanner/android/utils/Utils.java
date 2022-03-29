@@ -67,12 +67,6 @@ public class Utils {
 	public static void showDialog(SelectionListDialog dialog, FragmentManager fragmentManager, String tag, boolean allowStateLoss) {
 		if (allowStateLoss) {
 			final FragmentTransaction transaction = fragmentManager.beginTransaction();
-			final Class fragmentClass = dialog.getClass();
-			final int modifiers = fragmentClass.getModifiers();
-			System.out.println(fragmentClass.isAnonymousClass());
-			System.out.println(!Modifier.isPublic(modifiers));
-			System.out.println(fragmentClass.isMemberClass());
-			System.out.println(!Modifier.isStatic(modifiers));
 			transaction.add(dialog, tag);
 			transaction.commitAllowingStateLoss();
 		} else {
