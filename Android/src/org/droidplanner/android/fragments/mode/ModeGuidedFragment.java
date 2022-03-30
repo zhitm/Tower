@@ -2,7 +2,9 @@ package org.droidplanner.android.fragments.mode;
 
 import android.app.Activity;
 import android.os.Bundle;
+
 import androidx.fragment.app.Fragment;
+
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -138,7 +140,9 @@ public class ModeGuidedFragment extends ApiListenerFragment implements
     public void onGuidedClick(LatLong coord) {
         final Drone drone = getDrone();
         if (drone != null) {
-            ControlApi.getApi(drone).goTo(coord, false, null);
+//            ControlApi.getApi(drone).goTo(coord, false, null);
+//            Altitude alt = drone.getAttribute(AttributeType.ALTITUDE);
+            ControlApi.getApi(drone).lookAt(new LatLongAlt(coord, 0), false, null);
         }
     }
 }
