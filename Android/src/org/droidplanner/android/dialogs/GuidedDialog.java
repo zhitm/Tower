@@ -16,7 +16,9 @@ import androidx.fragment.app.DialogFragment;
 import com.google.android.gms.analytics.HitBuilders;
 import com.google.android.gms.maps.model.LatLng;
 import com.o3dr.android.client.Drone;
+import com.o3dr.android.client.apis.ControlApi;
 import com.o3dr.android.client.apis.VehicleApi;
+import com.o3dr.services.android.lib.coordinate.LatLongAlt;
 import com.o3dr.services.android.lib.drone.attribute.AttributeType;
 import com.o3dr.services.android.lib.drone.property.Type;
 import com.o3dr.services.android.lib.drone.property.VehicleMode;
@@ -62,8 +64,13 @@ public class GuidedDialog extends DialogFragment {
                                 HitBuilders.EventBuilder eventBuilder = new HitBuilders.EventBuilder().setCategory(GAUtils.Category.FLIGHT).setAction("Flight mode changed").setLabel(String.valueOf(VehicleMode.COPTER_GUIDED));
                                 GAUtils.sendEvent(eventBuilder);
                             }
-
-							listener.onForcedGuidedPoint(coord);
+							if (drone.lookAtMode){
+                                ControlApi.getApi(drone).lookAt(new LatLongAlt(coord.latitude,coord.longitude, 0), false, null);         // LatLong != LatLng WTF?!
+                            }
+                            else{
+                                listener.onForcedGuidedPoint(coord);
+                            }
+                            //
                         }
                     }
                 }).setNegativeButton(android.R.string.cancel, null);

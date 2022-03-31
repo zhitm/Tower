@@ -14,6 +14,7 @@ import com.o3dr.android.client.apis.ControlApi;
 import com.o3dr.services.android.lib.coordinate.LatLong;
 import com.o3dr.services.android.lib.coordinate.LatLongAlt;
 import com.o3dr.services.android.lib.drone.attribute.AttributeType;
+import com.o3dr.services.android.lib.drone.property.Altitude;
 import com.o3dr.services.android.lib.drone.property.GuidedState;
 import com.o3dr.services.android.lib.drone.property.Type;
 
@@ -140,9 +141,14 @@ public class ModeGuidedFragment extends ApiListenerFragment implements
     public void onGuidedClick(LatLong coord) {
         final Drone drone = getDrone();
         if (drone != null) {
-//            ControlApi.getApi(drone).goTo(coord, false, null);
-//            Altitude alt = drone.getAttribute(AttributeType.ALTITUDE);
-            ControlApi.getApi(drone).lookAt(new LatLongAlt(coord, 0), false, null);
+            ControlApi.getApi(drone).lookAt(new LatLongAlt(coord, 0), false, null);         //we anyway should scrim in our flight direction
+            if (!drone.lookAtMode)
+            {
+                ControlApi.getApi(drone).lookAt(new LatLongAlt(coord, 0), false, null);
+                ControlApi.getApi(drone).goTo(coord, false, null);
+                //drone.lookAtMode = true;
+                //Altitude alt = drone.getAttribute(AttributeType.ALTITUDE);
+            }
         }
     }
 }
