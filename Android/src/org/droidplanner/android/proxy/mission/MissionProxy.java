@@ -5,8 +5,10 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.net.Uri;
+
 import androidx.localbroadcastmanager.content.LocalBroadcastManager;
 import androidx.collection.CircularArray;
+
 import android.util.Pair;
 import android.widget.Toast;
 
@@ -169,7 +171,7 @@ public class MissionProxy implements DPMap.PathSource {
         if (mission == null)
             return;
 
-        if(!mission.equals(currentMission)) {
+        if (!mission.equals(currentMission)) {
             if (isNew) {
                 currentMission = null;
                 clearUndoBuffer();
@@ -188,8 +190,8 @@ public class MissionProxy implements DPMap.PathSource {
         }
     }
 
-    private void clearUndoBuffer(){
-        while(!undoBuffer.isEmpty())
+    private void clearUndoBuffer() {
+        while (!undoBuffer.isEmpty())
             undoBuffer.popLast();
     }
 
@@ -223,9 +225,9 @@ public class MissionProxy implements DPMap.PathSource {
      */
     public void addSurveyPolygon(List<LatLong> points, boolean spline) {
         Survey survey;
-        if(spline){
+        if (spline) {
             survey = new SplineSurvey();
-        }else {
+        } else {
             survey = new Survey();
         }
         survey.setPolygonPoints(points);
@@ -349,7 +351,7 @@ public class MissionProxy implements DPMap.PathSource {
 
     public boolean isFirstItemTakeoff() {
         return !missionItemProxies.isEmpty()
-            && missionItemProxies.get(0).getMissionItem().getType() == MissionItemType.TAKEOFF;
+                && missionItemProxies.get(0).getMissionItem().getType() == MissionItemType.TAKEOFF;
     }
 
     public boolean isLastItemLandOrRTL() {
@@ -399,8 +401,8 @@ public class MissionProxy implements DPMap.PathSource {
     /**
      * @return The order of the first waypoint.
      */
-    public int getFirstWaypoint(){
-        if(missionItemProxies.isEmpty())
+    public int getFirstWaypoint() {
+        if (missionItemProxies.isEmpty())
             return 0;
 
         return getOrder(missionItemProxies.get(0));
@@ -409,9 +411,9 @@ public class MissionProxy implements DPMap.PathSource {
     /**
      * @return The order for the last waypoint.
      */
-    public int getLastWaypoint(){
-        int lastIndex = missionItemProxies.size() -1;
-        if(lastIndex < 0)
+    public int getLastWaypoint() {
+        int lastIndex = missionItemProxies.size() - 1;
+        if (lastIndex < 0)
             return 0;
 
         return getOrder(missionItemProxies.get(lastIndex));
@@ -607,14 +609,14 @@ public class MissionProxy implements DPMap.PathSource {
             if (bucketEntry.first) {
                 List<LatLong> splinePoints = new ArrayList<>();
                 int bucketSize = bucket.size();
-                for(int i = 0; i < bucketSize; i++){
+                for (int i = 0; i < bucketSize; i++) {
                     MissionItemProxy missionItemProxy = bucket.get(i);
                     MissionItemType missionItemType = missionItemProxy.getMissionItem().getType();
                     List<LatLong> missionItemPath = missionItemProxy.getPath(lastPoint);
 
-                    switch(missionItemType){
+                    switch (missionItemType) {
                         case SURVEY:
-                            if(!missionItemPath.isEmpty()) {
+                            if (!missionItemPath.isEmpty()) {
                                 if (i == 0)
                                     splinePoints.add(missionItemPath.get(0));
                                 else {
@@ -634,8 +636,7 @@ public class MissionProxy implements DPMap.PathSource {
                 }
 
                 pathPoints.addAll(MathUtils.SplinePath.process(splinePoints));
-            }
-            else {
+            } else {
                 for (MissionItemProxy missionItemProxy : bucket) {
                     pathPoints.addAll(missionItemProxy.getPath(lastPoint));
 
@@ -690,14 +691,23 @@ public class MissionProxy implements DPMap.PathSource {
 
         for (MissionItemProxy itemProxy : mipList) {
             MissionItem item = itemProxy.getMissionItem();
-            if (!(item instanceof SpatialItem))
-                continue;
+            if (!(item instanceof SpatialItem)) {
+                if (item instanceof Survey) {
+                    List<LatLong> coordList = ((Survey) item).getGridPoints();
+                    coordList.forEach(c -> {
+                        if (c.getLatitude() == 0 || c.getLongitude() == 0)
+                            return;
+                        else
+                            coords.add(c);
+                    });
+                }
+            } else {
+                LatLong coordinate = ((SpatialItem) item).getCoordinate();
+                if (coordinate.getLatitude() == 0 || coordinate.getLongitude() == 0)
+                    continue;
 
-            LatLong coordinate = ((SpatialItem) item).getCoordinate();
-            if (coordinate.getLatitude() == 0 || coordinate.getLongitude() == 0)
-                continue;
-
-            coords.add(coordinate);
+                coords.add(coordinate);
+            }
         }
 
         return coords;
@@ -781,9 +791,9 @@ public class MissionProxy implements DPMap.PathSource {
                         lastPoint = point;
                     }
                 }
-                if (missionItem instanceof  Waypoint){
+                if (missionItem instanceof Waypoint) {
                     accumulatedDelay += ((Waypoint) missionItem).getDelay();
-                }else if (missionItem instanceof  SplineWaypoint){
+                } else if (missionItem instanceof SplineWaypoint) {
                     accumulatedDelay += ((SplineWaypoint) missionItem).getDelay();
                 }
             } else if (missionItem instanceof ChangeSpeed) {
@@ -824,7 +834,7 @@ public class MissionProxy implements DPMap.PathSource {
         }
     }
 
-    public double getAccumulatedMissionDelay(){
+    public double getAccumulatedMissionDelay() {
         double accumulatedDelay = 0; //time in decimal seconds
         for (MissionItemProxy itemProxy : missionItemProxies) {
             MissionItem missionItem = itemProxy.getMissionItem();
@@ -857,17 +867,17 @@ public class MissionProxy implements DPMap.PathSource {
         return polygonPaths;
     }
 
-    public void writeMissionToFile(Uri saveUri){
+    public void writeMissionToFile(Uri saveUri) {
         MissionApi.getApi(drone).saveMission(generateMission(), saveUri, new AbstractCommandListener() {
             @Override
             public void onSuccess() {
                 Toast.makeText(context, R.string.file_saved_success, Toast.LENGTH_SHORT)
-                    .show();
+                        .show();
 
                 final HitBuilders.EventBuilder eventBuilder = new HitBuilders.EventBuilder()
-                    .setCategory(GAUtils.Category.MISSION_PLANNING)
-                    .setAction("Mission saved to file")
-                    .setLabel("Mission items count");
+                        .setCategory(GAUtils.Category.MISSION_PLANNING)
+                        .setAction("Mission saved to file")
+                        .setLabel("Mission items count");
                 GAUtils.sendEvent(eventBuilder);
             }
 
@@ -883,7 +893,7 @@ public class MissionProxy implements DPMap.PathSource {
         });
     }
 
-    public void readMissionFromFile(final Uri fileUri){
+    public void readMissionFromFile(final Uri fileUri) {
         MissionApi.getApi(drone).loadAndSetMission(fileUri, new MissionApi.LoadingCallback<Mission>() {
             @Override
             public void onLoadingStart() {
