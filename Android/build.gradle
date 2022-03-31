@@ -80,9 +80,9 @@ dependencies {
 
 
     //Leak canary (https://github.com/square/leakcanary)
-    debugImplementation 'com.squareup.leakcanary:leakcanary-android:2.7'
-    releaseImplementation 'com.squareup.leakcanary:leakcanary-android:2.7'
-    testImplementation 'com.squareup.leakcanary:leakcanary-android:2.7'
+//    debugImplementation 'com.squareup.leakcanary:leakcanary-android:2.7'
+//    releaseImplementation 'com.squareup.leakcanary:leakcanary-android:2.7'
+//    testImplementation 'com.squareup.leakcanary:leakcanary-android:2.7'
 
 }
 
