@@ -103,8 +103,10 @@ public class MissionItemProxy {
 			case SPLINE_SURVEY:
 			case SURVEY:
 				List<LatLong> gridPoints = ((Survey) mMissionItem).getGridPoints();
+//				List<LatLong> cameraPoints = ((Survey) mMissionItem).getCameraLocations();
 				if (gridPoints != null && !gridPoints.isEmpty()) {
 					pathPoints.addAll(gridPoints);
+//					pathPoints.addAll(cameraPoints);
 				}
 				break;
 

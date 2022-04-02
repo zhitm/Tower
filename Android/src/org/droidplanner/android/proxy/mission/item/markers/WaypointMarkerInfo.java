@@ -1,5 +1,7 @@
 package org.droidplanner.android.proxy.mission.item.markers;
 
+import com.o3dr.services.android.lib.drone.mission.item.spatial.Waypoint;
+
 import org.droidplanner.android.R;
 import org.droidplanner.android.proxy.mission.item.MissionItemProxy;
 

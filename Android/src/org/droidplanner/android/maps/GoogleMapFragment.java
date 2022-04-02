@@ -964,7 +964,7 @@ public class GoogleMapFragment extends SupportMapFragment implements DPMap,
                     final int width = rootView.getWidth();
                     Timber.d("Screen W %d, H %d", width, height);
                     if (height > 0 && width > 0) {
-                        CameraUpdate animation = CameraUpdateFactory.newLatLngBounds(bounds, width, height, 100);
+                        CameraUpdate animation = CameraUpdateFactory.newLatLngBounds(bounds, width, height, 500);
                         googleMap.animateCamera(animation);
                     }
                 }

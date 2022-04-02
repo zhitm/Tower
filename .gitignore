@@ -34,3 +34,6 @@ proguard/
 
 # Mac OSX files
 .DS_Store
+
+ Android/libs/dronekit-android.3.0.4-beta.aar 
+ Android/libs/Mavlink.jar 
