@@ -84,7 +84,7 @@ public class EditorMapFragment extends DroneMap implements DPMap.OnMapLongClickL
 		}else if ((markerInfo instanceof PolygonMarkerInfo)) {
 			PolygonMarkerInfo marker = (PolygonMarkerInfo) markerInfo;
 			missionProxy.movePolygonPoint(marker.getSurvey(), marker.getIndex(), markerInfo.getPosition());
-			PolygonToolsImpl.selectedSurveySetup(marker.getSurvey());
+			PolygonToolsImpl.getInstance().setupForCurrentSurvey(marker.getSurvey());
 		}
 	}
 

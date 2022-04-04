@@ -25,6 +25,7 @@ import com.o3dr.android.client.utils.FileUtils;
 import com.o3dr.services.android.lib.coordinate.LatLong;
 import com.o3dr.services.android.lib.drone.attribute.AttributeEvent;
 import com.o3dr.services.android.lib.drone.mission.MissionItemType;
+import com.o3dr.services.android.lib.drone.mission.item.complex.Survey;
 
 import org.beyene.sius.unit.length.LengthUnit;
 import org.droidplanner.android.R;
@@ -558,7 +559,7 @@ public class EditorActivity extends DrawerNavigationUI implements OnPathFinished
 
         EditorToolsImpl toolImpl = getToolImpl();
         toolImpl.onListItemClick(item);
-        // TODO: implement adding points to polygon
+
         if (zoomToFit) {
             zoomToFitSelected();
         }
@@ -598,7 +599,7 @@ public class EditorActivity extends DrawerNavigationUI implements OnPathFinished
             removeItemDetail();
         } else {
             itemDetailToggle.setVisibility(View.VISIBLE);
-            if (getTool() == EditorTools.SELECTOR)
+            if (getTool() == EditorTools.SELECTOR || getTool() == EditorTools.POLYGON)
                 removeItemDetail();
             else {
                 showItemDetail(selectMissionDetailType(selected));

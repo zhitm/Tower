@@ -51,6 +51,7 @@ import java.util.LinkedHashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Optional;
+import java.util.concurrent.atomic.AtomicReference;
 
 /**
  * This class is used as a wrapper to {@link com.o3dr.services.android.lib.drone.mission.Mission}
@@ -337,21 +338,28 @@ public class MissionProxy implements DPMap.PathSource {
         notifyMissionUpdate();
     }
 
-    private void tryDeleteMissionItem(MissionItem missionItem) {
+    private boolean containsPolygon(MissionItem missionItem, AtomicReference<MissionItemProxy> containingProxy) {
         if (!(missionItem instanceof Survey))
-            return;
+            return false;
+
         int polygonId = ((Survey) missionItem).getPolygonId();
         Optional<MissionItemProxy> missionItemProxy = missionItemProxies.stream()
                 .filter(proxy -> proxy.getMissionItem() instanceof Survey)
                 .filter(proxy -> ((Survey) proxy.getMissionItem()).getPolygonId() == polygonId)
                 .findAny();
-        missionItemProxy.ifPresent(missionItemProxies::remove);
+
+        missionItemProxy.ifPresent(containingProxy::set);
+
+        return missionItemProxy.isPresent();
     }
 
     private void editMissionItem(MissionItem missionItem) {
-        tryDeleteMissionItem(missionItem);
-        missionItemProxies.add(new MissionItemProxy(this, missionItem));
-        notifyMissionUpdate();
+        AtomicReference<MissionItemProxy> containingProxy = new AtomicReference<>();
+        if (containsPolygon(missionItem, containingProxy)) {
+            replace(containingProxy.get(), new MissionItemProxy(this, missionItem));
+        } else {
+            addMissionItem(missionItem);
+        }
     }
 
     public void addTakeoff() {

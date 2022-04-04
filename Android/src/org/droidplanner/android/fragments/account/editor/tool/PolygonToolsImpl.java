@@ -8,6 +8,7 @@ import android.widget.Toast;
 
 import com.o3dr.services.android.lib.coordinate.LatLong;
 import com.o3dr.services.android.lib.drone.mission.MissionItemType;
+import com.o3dr.services.android.lib.drone.mission.item.MissionItem;
 import com.o3dr.services.android.lib.drone.mission.item.complex.Survey;
 import com.o3dr.services.android.lib.drone.mission.item.spatial.BaseSpatialItem;
 
@@ -47,8 +48,15 @@ public class PolygonToolsImpl extends EditorToolsImpl implements AdapterView.OnI
         return polygonId;
     }
 
+    private static PolygonToolsImpl instance;
+
+    public static PolygonToolsImpl getInstance() {
+        return instance;
+    }
+
     PolygonToolsImpl(EditorToolsFragment fragment) {
         super(fragment);
+        instance = this;
     }
 
     void onSaveInstanceState(Bundle outState) {
@@ -74,15 +82,16 @@ public class PolygonToolsImpl extends EditorToolsImpl implements AdapterView.OnI
     }
 
     @Override
-    public void onSelectionUpdate(List<MissionItemProxy> selected) {
-        super.onSelectionUpdate(selected);
-        if (selected == null)
+    public void onListItemClick(MissionItemProxy item) {
+        if (item == null || !(item.getMissionItem() instanceof MissionItem.ComplexItem))
             return;
-
-        selected.stream()
-                .filter(proxy -> proxy.getMissionItem() instanceof Survey)
-                .map(proxy -> (Survey) proxy.getMissionItem())
-                .findAny().ifPresent(PolygonToolsImpl::selectedSurveySetup);
+        if (missionProxy.selection.selectionContains(item)) {
+            missionProxy.selection.clearSelection();
+            reset();
+        } else {
+            missionProxy.selection.setSelectionTo(item);
+            setupForCurrentSurvey((Survey) item.getMissionItem());
+        }
     }
 
     @Override
@@ -95,38 +104,24 @@ public class PolygonToolsImpl extends EditorToolsImpl implements AdapterView.OnI
         if (missionProxy == null) return;
 
         // If an mission item is selected, unselect it.
-        missionProxy.selection.clearSelection();
+//        missionProxy.selection.clearSelection();
 
         if (selectedType == null)
             return;
 
         polygonPoints.add(point);
 
-//        BaseSpatialItem spatialItem = (BaseSpatialItem) selectedType.getNewItem();
-//        missionProxy.addSpatialWaypoint(spatialItem, point);
-
         if (missionProxy != null && polygonPoints.size() > 0) {
             switch (selectedType) {
                 case SURVEY:
-//                    if (polygonPoints.size() > 2) {
                     missionProxy.addSurveyPolygon(polygonPoints, false, polygonId);
-//                    } else {
-//                        editorToolsFragment.setTool(EditorToolsFragment.EditorTools.POLYGON);
-//                        return;
-//                    }
                     break;
 
                 case SPLINE_SURVEY:
-                    if (polygonPoints.size() > 2) {
-                        missionProxy.addSurveyPolygon(polygonPoints, true, polygonId);
-                    } else {
-                        editorToolsFragment.setTool(EditorToolsFragment.EditorTools.POLYGON);
-                        return;
-                    }
+                    missionProxy.addSurveyPolygon(polygonPoints, true, polygonId);
                     break;
             }
         }
-//        editorToolsFragment.setTool(EditorToolsFragment.EditorTools.NONE);
     }
 
 
@@ -155,9 +150,9 @@ public class PolygonToolsImpl extends EditorToolsImpl implements AdapterView.OnI
         return selectedType;
     }
 
-    public static void selectedSurveySetup(Survey survey) {
+    public void setupForCurrentSurvey(Survey survey) {
         polygonId = survey.getPolygonId();
-        polygonPoints = survey.getPolygonPoints();
+        polygonPoints = new ArrayList<>(survey.getPolygonPoints());
     }
 
     public static void reset() {
@@ -165,7 +160,7 @@ public class PolygonToolsImpl extends EditorToolsImpl implements AdapterView.OnI
         polygonPoints.clear();
     }
 
-    public static boolean shouldEnableZoomToFit(){
+    public static boolean shouldEnableZoomToFit() {
         return !(polygonPoints.size() > 0 && polygonPoints.size() < 3);
     }
 }
