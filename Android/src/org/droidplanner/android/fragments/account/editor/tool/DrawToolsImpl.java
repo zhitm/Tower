@@ -5,6 +5,7 @@ import android.view.View;
 import android.widget.AdapterView;
 import android.widget.Toast;
 
+import com.baidu.mapapi.map.Polygon;
 import com.o3dr.services.android.lib.coordinate.LatLong;
 import com.o3dr.services.android.lib.drone.mission.MissionItemType;
 
@@ -63,6 +64,8 @@ class DrawToolsImpl extends EditorToolsImpl implements AdapterView.OnItemSelecte
         if (selectedType == MissionItemType.SURVEY) {
             Toast.makeText(editorToolsFragment.getContext(), R.string.draw_the_survey_region, Toast.LENGTH_SHORT).show();
         }
+
+        PolygonToolsImpl.reset();
     }
 
     @Override
@@ -80,7 +83,7 @@ class DrawToolsImpl extends EditorToolsImpl implements AdapterView.OnItemSelecte
 
                 case SURVEY:
                     if (points.size() > 2) {
-                        missionProxy.addSurveyPolygon(points, false);
+                        missionProxy.addSurveyPolygon(points, false, PolygonToolsImpl.getPolygonId());
                     } else {
                         editorToolsFragment.setTool(EditorToolsFragment.EditorTools.DRAW);
                         return;
@@ -89,7 +92,7 @@ class DrawToolsImpl extends EditorToolsImpl implements AdapterView.OnItemSelecte
 
                 case SPLINE_SURVEY:
                     if (points.size() > 2) {
-                        missionProxy.addSurveyPolygon(points, true);
+                        missionProxy.addSurveyPolygon(points, true, PolygonToolsImpl.getPolygonId());
                     } else {
                         editorToolsFragment.setTool(EditorToolsFragment.EditorTools.DRAW);
                         return;

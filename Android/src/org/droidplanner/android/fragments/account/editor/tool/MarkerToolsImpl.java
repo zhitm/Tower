@@ -59,7 +59,7 @@ class MarkerToolsImpl extends EditorToolsImpl implements AdapterView.OnItemSelec
 
     @Override
     public EditorToolsFragment.EditorTools getEditorTools() {
-        return EditorToolsFragment.EditorTools.MARKER;
+        return EditorToolsFragment.EditorTools.POLYGON;
     }
 
     MissionItemType getSelected() {

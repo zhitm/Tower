@@ -40,7 +40,8 @@ public class EditorToolsFragment extends ApiListenerFragment implements OnClickL
     private static final String STATE_SELECTED_TOOL = "selected_tool";
 
     public enum EditorTools {
-        MARKER, DRAW, TRASH, SELECTOR, NONE
+        //                MARKER,
+        POLYGON, DRAW, TRASH, SELECTOR, NONE
     }
 
     public interface EditorToolListener {
@@ -72,12 +73,13 @@ public class EditorToolsFragment extends ApiListenerFragment implements OnClickL
     /**
      * The marker tool should be set by default.
      */
-    private static final EditorTools DEFAULT_TOOL = EditorTools.MARKER;
+    private static final EditorTools DEFAULT_TOOL = EditorTools.NONE;
 
     private final EditorToolsImpl[] editorToolsImpls = new EditorToolsImpl[EditorTools.values().length];
 
     {
-        editorToolsImpls[EditorTools.MARKER.ordinal()] = new MarkerToolsImpl(this);
+//        editorToolsImpls[EditorTools.MARKER.ordinal()] = new MarkerToolsImpl(this);
+        editorToolsImpls[EditorTools.POLYGON.ordinal()] = new PolygonToolsImpl(this);
         editorToolsImpls[EditorTools.DRAW.ordinal()] = new DrawToolsImpl(this);
         editorToolsImpls[EditorTools.TRASH.ordinal()] = new TrashToolsImpl(this);
         editorToolsImpls[EditorTools.SELECTOR.ordinal()] = new SelectorToolsImpl(this);
@@ -92,13 +94,14 @@ public class EditorToolsFragment extends ApiListenerFragment implements OnClickL
     //Sub action views
     private View editorSubTools;
     private Spinner drawItemsSpinner;
-    private Spinner markerItemsSpinner;
+    //        private Spinner markerItemsSpinner;
+    private Spinner polygonItemsSpinner;
 
     private View clearSubOptions;
     TextView clearMission;
     TextView clearSelected;
 
-     TextView selectAll;
+    TextView selectAll;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -132,14 +135,23 @@ public class EditorToolsFragment extends ApiListenerFragment implements OnClickL
         drawItemsSpinner.setSelection(drawItemsAdapter.getPosition(drawToolImpl.getSelected()));
         drawItemsSpinner.setOnItemSelectedListener(drawToolImpl);
 
-        final MarkerToolsImpl markerToolImpl = (MarkerToolsImpl) editorToolsImpls[EditorTools.MARKER.ordinal()];
-        final RadioButtonCenter buttonMarker = (RadioButtonCenter) view.findViewById(R.id.editor_tools_marker);
-        final AdapterMissionItems markerItemsAdapter = new AdapterMissionItems(context,
-                R.layout.spinner_drop_down_mission_item, MarkerToolsImpl.MARKER_ITEMS_TYPE);
-        markerItemsSpinner = (Spinner) view.findViewById(R.id.marker_items_spinner);
-        markerItemsSpinner.setAdapter(markerItemsAdapter);
-        markerItemsSpinner.setSelection(markerItemsAdapter.getPosition(markerToolImpl.getSelected()));
-        markerItemsSpinner.setOnItemSelectedListener(markerToolImpl);
+//        final MarkerToolsImpl markerToolImpl = (MarkerToolsImpl) editorToolsImpls[EditorTools.MARKER.ordinal()];
+//        final RadioButtonCenter buttonMarker = (RadioButtonCenter) view.findViewById(R.id.editor_tools_marker);
+//        final AdapterMissionItems markerItemsAdapter = new AdapterMissionItems(context,
+//                R.layout.spinner_drop_down_mission_item, MarkerToolsImpl.MARKER_ITEMS_TYPE);
+//        markerItemsSpinner = (Spinner) view.findViewById(R.id.marker_items_spinner);
+//        markerItemsSpinner.setAdapter(markerItemsAdapter);
+//        markerItemsSpinner.setSelection(markerItemsAdapter.getPosition(markerToolImpl.getSelected()));
+//        markerItemsSpinner.setOnItemSelectedListener(markerToolImpl);
+
+        final PolygonToolsImpl polygonToolImpl = (PolygonToolsImpl) editorToolsImpls[EditorTools.POLYGON.ordinal()];
+        final RadioButtonCenter buttonPolygon = (RadioButtonCenter) view.findViewById(R.id.editor_tools_marker);
+        final AdapterMissionItems polygonItemsAdapter = new AdapterMissionItems(context,
+                R.layout.spinner_drop_down_mission_item, PolygonToolsImpl.POLYGON_ITEMS_TYPE);
+        polygonItemsSpinner = (Spinner) view.findViewById(R.id.marker_items_spinner);
+        polygonItemsSpinner.setAdapter(polygonItemsAdapter);
+        polygonItemsSpinner.setSelection(polygonItemsAdapter.getPosition(polygonToolImpl.getSelected()));
+        polygonItemsSpinner.setOnItemSelectedListener(polygonToolImpl);
 
         final RadioButtonCenter buttonTrash = (RadioButtonCenter) view.findViewById(R.id.editor_tools_trash);
         final TrashToolsImpl trashToolImpl = (TrashToolsImpl) editorToolsImpls[EditorTools.TRASH.ordinal()];
@@ -157,7 +169,7 @@ public class EditorToolsFragment extends ApiListenerFragment implements OnClickL
         selectAll = (TextView) view.findViewById(R.id.select_all_button);
         selectAll.setOnClickListener(selectorToolImpl);
 
-        for (View vv : new View[]{buttonDraw, buttonMarker, buttonTrash, buttonSelector}) {
+        for (View vv : new View[]{buttonDraw, buttonPolygon, buttonTrash, buttonSelector}) {
             vv.setOnClickListener(this);
         }
     }
@@ -249,8 +261,11 @@ public class EditorToolsFragment extends ApiListenerFragment implements OnClickL
         if (clearSubOptions != null)
             clearSubOptions.setVisibility(View.GONE);
 
-        if (markerItemsSpinner != null)
-            markerItemsSpinner.setVisibility(View.GONE);
+//        if (markerItemsSpinner != null)
+//            markerItemsSpinner.setVisibility(View.GONE);
+
+        if (polygonItemsSpinner != null)
+            polygonItemsSpinner.setVisibility(View.GONE);
 
         if (drawItemsSpinner != null)
             drawItemsSpinner.setVisibility(View.GONE);
@@ -326,9 +341,14 @@ public class EditorToolsFragment extends ApiListenerFragment implements OnClickL
                 drawItemsSpinner.setVisibility(View.VISIBLE);
                 break;
 
-            case MARKER:
+//            case MARKER:
+//                editorSubTools.setVisibility(View.VISIBLE);
+//                markerItemsSpinner.setVisibility(View.VISIBLE);
+//                break;
+
+            case POLYGON:
                 editorSubTools.setVisibility(View.VISIBLE);
-                markerItemsSpinner.setVisibility(View.VISIBLE);
+                polygonItemsSpinner.setVisibility(View.VISIBLE);
                 break;
 
             default:
@@ -356,7 +376,8 @@ public class EditorToolsFragment extends ApiListenerFragment implements OnClickL
     private EditorTools getToolForView(int viewId) {
         switch (viewId) {
             case R.id.editor_tools_marker:
-                return EditorTools.MARKER;
+//                return EditorTools.MARKER;
+                return EditorTools.POLYGON;
 
             case R.id.editor_tools_draw:
                 return EditorTools.DRAW;
@@ -380,7 +401,9 @@ public class EditorToolsFragment extends ApiListenerFragment implements OnClickL
      */
     private int getViewForTool(EditorTools tool) {
         switch (tool) {
-            case MARKER:
+//            case MARKER:
+//                return R.id.editor_tools_marker;
+            case POLYGON:
                 return R.id.editor_tools_marker;
 
             case DRAW:

@@ -195,6 +195,8 @@ public class DroidPlannerPrefs {
     private static final String PREF_SURVEY_SIDELAP = "pref_survey_sidelap";
     private static final String PREF_SURVEY_LOCK_ORIENTATION = "pref_survey_lock_orientation";
     private static final String PREF_SURVEY_START_CAMERA_BEFORE_FIRST_WAYPOINT = "pref_survey_start_camera_before_first_waypoint";
+    private static final String PREF_SURVEY_FLIGHT_CORRIDOR_WIDTH = "pref_survey_flight_corridor_width";
+    private static final String PREF_SURVEY_WP_INTERVAL = "pref_survey_wp_interval";
     private static final String PREF_VEHICLE_HISTORY_SESSION_ID = "pref_vehicle_history_session_id";
     public static final String PREF_PROJECT_CREATOR = "pref_project_creator";
     public static final String PREF_PROJECT_LEAD_MAINTAINER = "pref_project_lead_maintainer";
@@ -623,6 +625,12 @@ public class DroidPlannerPrefs {
         // Persist the sidelap.
         editor.putFloat(PREF_SURVEY_SIDELAP, (float) surveyDetail.getSidelap());
 
+        // Persist flight corridor width.
+        editor.putFloat(PREF_SURVEY_FLIGHT_CORRIDOR_WIDTH, (float) surveyDetail.getFlightCorridorWidth());
+
+        // Persist WP interval.
+        editor.putFloat(PREF_SURVEY_WP_INTERVAL, (float) surveyDetail.getWpInterval());
+
         // Persist the check for starting the camera before the first waypoint.
         editor.putBoolean(PREF_SURVEY_START_CAMERA_BEFORE_FIRST_WAYPOINT, survey.isStartCameraBeforeFirstWaypoint());
 
@@ -653,6 +661,12 @@ public class DroidPlannerPrefs {
 
         // Load the overlap.
         surveyDetail.setOverlap(prefs.getFloat(PREF_SURVEY_OVERLAP, 50));
+
+        // Load flight corridor width.
+        surveyDetail.setFlightCorridorWidth(prefs.getFloat(PREF_SURVEY_FLIGHT_CORRIDOR_WIDTH, (float) Survey.DEFAULT_CORRIDOR_WIDTH));
+
+        // Load WP interval.
+        surveyDetail.setWpInterval(prefs.getFloat(PREF_SURVEY_WP_INTERVAL, (float) Survey.DEFAULT_WP_INTERVAL));
 
         // Load the altitude.
         surveyDetail.setAltitude(prefs.getFloat(PREF_SURVEY_ALTITUDE, 50));

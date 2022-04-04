@@ -84,7 +84,9 @@ public class EditorActivity extends DrawerNavigationUI implements OnPathFinished
             final String action = intent.getAction();
             switch (action) {
                 case MissionProxy.ACTION_MISSION_PROXY_UPDATE:
-                    if (mAppPrefs.isZoomToFitEnable()) gestureMapFragment.getMapFragment().zoomToFit();
+                    // TODO: Fix ZoomToFit()
+                    if (mAppPrefs.isZoomToFitEnable() && missionProxy.getSurveyCount() > 0)
+                        gestureMapFragment.getMapFragment().zoomToFit();
                     // FALL THROUGH
                 case AttributeEvent.PARAMETERS_REFRESH_COMPLETED:
                 case DroidPlannerPrefs.PREF_VEHICLE_DEFAULT_SPEED:

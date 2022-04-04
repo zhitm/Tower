@@ -15,9 +15,11 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.o3dr.services.android.lib.drone.mission.MissionItemType;
+import com.o3dr.services.android.lib.drone.mission.item.complex.Survey;
 
 import org.droidplanner.android.R;
 import org.droidplanner.android.activities.interfaces.OnEditorInteraction;
+import org.droidplanner.android.fragments.account.editor.tool.PolygonToolsImpl;
 import org.droidplanner.android.fragments.helpers.ApiListenerFragment;
 import org.droidplanner.android.proxy.mission.MissionProxy;
 import org.droidplanner.android.proxy.mission.MissionSelection;
@@ -131,6 +133,7 @@ public class EditorListFragment extends ApiListenerFragment implements MissionSe
                         handler.removeCallbacks(broadcastMissionUpdate);
                         break;
                 }
+
             }
 
             @Override
@@ -193,5 +196,6 @@ public class EditorListFragment extends ApiListenerFragment implements MissionSe
     @Override
     public void onSelectionUpdate(List<MissionItemProxy> selected) {
         recyclerAdapter.notifyDataSetChanged();
+        // TODO: implement selection for surveys
     }
 }

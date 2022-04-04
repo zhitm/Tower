@@ -13,6 +13,7 @@ import com.o3dr.services.android.lib.drone.mission.item.MissionItem;
 import com.o3dr.services.android.lib.drone.property.Home;
 
 import org.droidplanner.android.activities.interfaces.OnEditorInteraction;
+import org.droidplanner.android.fragments.account.editor.tool.PolygonToolsImpl;
 import org.droidplanner.android.maps.DPMap;
 import org.droidplanner.android.maps.MarkerInfo;
 import org.droidplanner.android.proxy.mission.MissionSelection;
@@ -83,6 +84,7 @@ public class EditorMapFragment extends DroneMap implements DPMap.OnMapLongClickL
 		}else if ((markerInfo instanceof PolygonMarkerInfo)) {
 			PolygonMarkerInfo marker = (PolygonMarkerInfo) markerInfo;
 			missionProxy.movePolygonPoint(marker.getSurvey(), marker.getIndex(), markerInfo.getPosition());
+			PolygonToolsImpl.selectedSurveySetup(marker.getSurvey());
 		}
 	}
 

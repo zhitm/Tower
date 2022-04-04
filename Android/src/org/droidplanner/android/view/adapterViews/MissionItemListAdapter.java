@@ -28,6 +28,7 @@ import org.beyene.sius.unit.composition.speed.SpeedUnit;
 import org.beyene.sius.unit.length.LengthUnit;
 import org.droidplanner.android.R;
 import org.droidplanner.android.activities.interfaces.OnEditorInteraction;
+import org.droidplanner.android.fragments.account.editor.tool.PolygonToolsImpl;
 import org.droidplanner.android.proxy.mission.MissionProxy;
 import org.droidplanner.android.proxy.mission.item.MissionItemProxy;
 import org.droidplanner.android.utils.unit.UnitManager;
@@ -109,6 +110,9 @@ public class MissionItemListAdapter extends RecyclerView.Adapter<MissionItemList
         MissionItemProxy deletedItem = missionProxy.getItems().remove(deletedPosition);
         missionProxy.selection.getSelected().remove(deletedItem);
         notifyItemRemoved(deletedPosition);
+        if (deletedItem.getMissionItem() instanceof Survey) {
+            PolygonToolsImpl.reset();
+        }
     }
 
     @Override

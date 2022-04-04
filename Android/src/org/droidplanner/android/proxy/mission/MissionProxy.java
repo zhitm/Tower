@@ -39,6 +39,7 @@ import com.o3dr.services.android.lib.util.MathUtils;
 
 import org.droidplanner.android.DroidPlannerApp;
 import org.droidplanner.android.R;
+import org.droidplanner.android.fragments.account.editor.tool.PolygonToolsImpl;
 import org.droidplanner.android.maps.DPMap;
 import org.droidplanner.android.proxy.mission.item.MissionItemProxy;
 import org.droidplanner.android.utils.Utils;
@@ -47,8 +48,10 @@ import org.droidplanner.android.utils.prefs.DroidPlannerPrefs;
 
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Optional;
 
 /**
  * This class is used as a wrapper to {@link com.o3dr.services.android.lib.drone.mission.Mission}
@@ -223,7 +226,7 @@ public class MissionProxy implements DPMap.PathSource {
      *
      * @param points 2D points making up the survey
      */
-    public void addSurveyPolygon(List<LatLong> points, boolean spline) {
+    public void addSurveyPolygon(List<LatLong> points, boolean spline, int polygonId) {
         Survey survey;
         if (spline) {
             survey = new SplineSurvey();
@@ -231,11 +234,12 @@ public class MissionProxy implements DPMap.PathSource {
             survey = new Survey();
         }
         survey.setPolygonPoints(points);
+        survey.setPolygonId(polygonId);
 
         // Load the last survey preferences.
         dpPrefs.loadSurveyPreferences(drone, survey);
 
-        addMissionItem(survey);
+        editMissionItem(survey);
     }
 
     /**
@@ -331,6 +335,23 @@ public class MissionProxy implements DPMap.PathSource {
 
     private void addMissionItem(int index, MissionItem missionItem) {
         missionItemProxies.add(index, new MissionItemProxy(this, missionItem));
+        notifyMissionUpdate();
+    }
+
+    private void tryDeleteMissionItem(MissionItem missionItem) {
+        if (!(missionItem instanceof Survey))
+            return;
+        int polygonId = ((Survey) missionItem).getPolygonId();
+        Optional<MissionItemProxy> missionItemProxy = missionItemProxies.stream()
+                .filter(proxy -> proxy.getMissionItem() instanceof Survey)
+                .filter(proxy -> ((Survey) proxy.getMissionItem()).getPolygonId() == polygonId)
+                .findAny();
+        missionItemProxy.ifPresent(missionItemProxies::remove);
+    }
+
+    private void editMissionItem(MissionItem missionItem) {
+        tryDeleteMissionItem(missionItem);
+        missionItemProxies.add(new MissionItemProxy(this, missionItem));
         notifyMissionUpdate();
     }
 
@@ -672,6 +693,15 @@ public class MissionProxy implements DPMap.PathSource {
         }
     }
 
+    public int getSurveyCount() {
+        return getSurveyCount(missionItemProxies);
+    }
+
+    public static int getSurveyCount(List<MissionItemProxy> mipList) {
+        return (int) mipList.stream()
+                .filter(proxy -> proxy.getMissionItem() instanceof Survey).count();
+    }
+
     public List<LatLong> getVisibleCoords() {
         return getVisibleCoords(missionItemProxies);
     }
@@ -693,7 +723,8 @@ public class MissionProxy implements DPMap.PathSource {
             MissionItem item = itemProxy.getMissionItem();
             if (!(item instanceof SpatialItem)) {
                 if (item instanceof Survey) {
-                    List<LatLong> coordList = ((Survey) item).getGridPoints();
+                    List<LatLong> coordList = new ArrayList<>(((Survey) item).getGridPoints());
+                    coordList.addAll(((Survey) item).getPolygonPoints());
                     coordList.forEach(c -> {
                         if (c.getLatitude() == 0 || c.getLongitude() == 0)
                             return;
