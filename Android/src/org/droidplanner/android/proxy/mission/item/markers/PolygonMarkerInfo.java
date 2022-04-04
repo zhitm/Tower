@@ -41,7 +41,7 @@ public class PolygonMarkerInfo extends MarkerInfo {
 
 	@Override
 	public float getAnchorV() {
-		return 0.5f;
+		return 1.0f;
 	}
 
 	@Override

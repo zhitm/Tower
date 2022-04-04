@@ -139,8 +139,6 @@ public class PolygonToolsImpl extends EditorToolsImpl implements AdapterView.OnI
 
         if (missionProxy != null)
             missionProxy.selection.clearSelection();
-
-        reset();
     }
 
     @Override
@@ -165,5 +163,9 @@ public class PolygonToolsImpl extends EditorToolsImpl implements AdapterView.OnI
     public static void reset() {
         polygonId = idGenerator.getAndIncrement();
         polygonPoints.clear();
+    }
+
+    public static boolean shouldEnableZoomToFit(){
+        return !(polygonPoints.size() > 0 && polygonPoints.size() < 3);
     }
 }

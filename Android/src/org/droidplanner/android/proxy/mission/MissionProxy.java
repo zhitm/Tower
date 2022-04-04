@@ -39,7 +39,6 @@ import com.o3dr.services.android.lib.util.MathUtils;
 
 import org.droidplanner.android.DroidPlannerApp;
 import org.droidplanner.android.R;
-import org.droidplanner.android.fragments.account.editor.tool.PolygonToolsImpl;
 import org.droidplanner.android.maps.DPMap;
 import org.droidplanner.android.proxy.mission.item.MissionItemProxy;
 import org.droidplanner.android.utils.Utils;
@@ -48,7 +47,7 @@ import org.droidplanner.android.utils.prefs.DroidPlannerPrefs;
 
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.Iterator;
+import java.util.LinkedHashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Optional;
@@ -712,6 +711,48 @@ public class MissionProxy implements DPMap.PathSource {
         notifyMissionUpdate();
     }
 
+    public List<MissionItemProxy> getSelectedCoordsWithNeighbourhood(List<MissionItemProxy> mipList) {
+        if (mipList.stream().noneMatch(proxy -> proxy.getMissionItem() instanceof SpatialItem))
+            return mipList;
+
+        List<MissionItemProxy> resultItems = new ArrayList<>();
+        int queueOverSizeBuffer = 2;
+        LinkedHashMap<Integer, MissionItemProxy> spatialQueue = new LinkedHashMap<Integer, MissionItemProxy>() {
+            @Override
+            protected boolean removeEldestEntry(Entry<Integer, MissionItemProxy> eldest) {
+                return this.size() > mipList.size() + queueOverSizeBuffer * 2;
+            }
+        };
+
+        int extraPointsSaved = 0;
+        boolean hasFoundItem = false;
+        for (MissionItemProxy proxy : missionItemProxies) {
+            MissionItem missionItem = proxy.getMissionItem();
+            if (missionItem instanceof MissionItem.SpatialItem) {
+                if (extraPointsSaved < queueOverSizeBuffer) {
+                    spatialQueue.put(proxy.hashCode(), proxy);
+                } else {
+                    hasFoundItem = false;
+                }
+
+                if (hasFoundItem)
+                    extraPointsSaved++;
+
+                if (mipList.contains(proxy)) {
+                    hasFoundItem = true;
+                    extraPointsSaved = 0;
+                }
+
+            }
+            else {
+                if (mipList.contains(proxy))
+                    resultItems.add(proxy);
+            }
+        }
+        resultItems.addAll(spatialQueue.values());
+        return resultItems;
+    }
+
     public static List<LatLong> getVisibleCoords(List<MissionItemProxy> mipList) {
         List<LatLong> coords = new ArrayList<LatLong>();
 
@@ -740,7 +781,6 @@ public class MissionProxy implements DPMap.PathSource {
                 coords.add(coordinate);
             }
         }
-
         return coords;
     }
 

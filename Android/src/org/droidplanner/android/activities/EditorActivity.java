@@ -6,8 +6,11 @@ import android.content.Intent;
 import android.content.IntentFilter;
 import android.net.Uri;
 import android.os.Bundle;
+
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
+
 import androidx.fragment.app.FragmentManager;
+
 import android.text.TextUtils;
 import android.util.Pair;
 import android.util.TypedValue;
@@ -33,6 +36,7 @@ import org.droidplanner.android.fragments.EditorMapFragment;
 import org.droidplanner.android.fragments.account.editor.tool.EditorToolsFragment;
 import org.droidplanner.android.fragments.account.editor.tool.EditorToolsFragment.EditorTools;
 import org.droidplanner.android.fragments.account.editor.tool.EditorToolsImpl;
+import org.droidplanner.android.fragments.account.editor.tool.PolygonToolsImpl;
 import org.droidplanner.android.fragments.helpers.GestureMapFragment;
 import org.droidplanner.android.fragments.helpers.GestureMapFragment.OnPathFinishedListener;
 import org.droidplanner.android.proxy.mission.MissionProxy;
@@ -84,8 +88,9 @@ public class EditorActivity extends DrawerNavigationUI implements OnPathFinished
             final String action = intent.getAction();
             switch (action) {
                 case MissionProxy.ACTION_MISSION_PROXY_UPDATE:
-                    // TODO: Fix ZoomToFit()
-                    if (mAppPrefs.isZoomToFitEnable() && missionProxy.getSurveyCount() == 0)
+                    if (mAppPrefs.isZoomToFitEnable()
+                            && missionProxy.selection.getSelected().isEmpty()
+                            && PolygonToolsImpl.shouldEnableZoomToFit())
                         gestureMapFragment.getMapFragment().zoomToFit();
                     // FALL THROUGH
                 case AttributeEvent.PARAMETERS_REFRESH_COMPLETED:
@@ -164,7 +169,7 @@ public class EditorActivity extends DrawerNavigationUI implements OnPathFinished
 
         if (savedInstanceState != null) {
             String openedMissionFilename = savedInstanceState.getString(EXTRA_OPENED_MISSION_FILENAME);
-            if(!TextUtils.isEmpty(openedMissionFilename)) {
+            if (!TextUtils.isEmpty(openedMissionFilename)) {
                 openedMissionFile = new File(openedMissionFilename);
             }
         }
@@ -177,17 +182,17 @@ public class EditorActivity extends DrawerNavigationUI implements OnPathFinished
     }
 
     @Override
-    protected void onNewIntent(Intent intent){
+    protected void onNewIntent(Intent intent) {
         super.onNewIntent(intent);
         handleIntent(intent);
     }
 
-    private void handleIntent(Intent intent){
-        if(intent == null || missionProxy == null)
+    private void handleIntent(Intent intent) {
+        if (intent == null || missionProxy == null)
             return;
 
         String action = intent.getAction();
-        if(TextUtils.isEmpty(action))
+        if (TextUtils.isEmpty(action))
             return;
 
         switch (action) {
@@ -308,7 +313,7 @@ public class EditorActivity extends DrawerNavigationUI implements OnPathFinished
     @Override
     public void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
-        if(openedMissionFile != null) {
+        if (openedMissionFile != null) {
             outState.putString(EXTRA_OPENED_MISSION_FILENAME, openedMissionFile.getAbsolutePath());
         }
     }
@@ -354,8 +359,8 @@ public class EditorActivity extends DrawerNavigationUI implements OnPathFinished
         missionDialog.openDialog(this, DirectoryPath.getWaypointsPath(), FileList.getWaypointFileList());
     }
 
-    private void openMissionFile(Uri missionUri){
-        if(missionProxy != null) {
+    private void openMissionFile(Uri missionUri) {
+        if (missionProxy != null) {
             missionProxy.readMissionFromFile(missionUri);
         }
     }
@@ -387,7 +392,7 @@ public class EditorActivity extends DrawerNavigationUI implements OnPathFinished
         dialog.show(getSupportFragmentManager(), MISSION_FILENAME_DIALOG_TAG);
     }
 
-    private static String getWaypointFilename(String prefix){
+    private static String getWaypointFilename(String prefix) {
         return prefix + "-" + FileStream.getTimeStamp();
     }
 
@@ -402,15 +407,15 @@ public class EditorActivity extends DrawerNavigationUI implements OnPathFinished
 
             Pair<Double, Double> distanceAndTime = missionProxy.getMissionFlightTime();
             LengthUnit convertedMissionLength = unitSystem.getLengthUnitProvider()
-                .boxBaseValueToTarget(distanceAndTime.first);
+                    .boxBaseValueToTarget(distanceAndTime.first);
 
             double time = distanceAndTime.second;
             String infoString = getString(R.string.editor_info_window_distance,
-                convertedMissionLength.toString()) +
-                ", " +
-                getString(R.string.editor_info_window_flight_time, time == Double.POSITIVE_INFINITY
-                    ? time
-                    : String.format(Locale.US, "%1$02d:%2$02d", ((int) time / 60), ((int) time % 60)));
+                    convertedMissionLength.toString()) +
+                    ", " +
+                    getString(R.string.editor_info_window_flight_time, time == Double.POSITIVE_INFINITY
+                            ? time
+                            : String.format(Locale.US, "%1$02d:%2$02d", ((int) time / 60), ((int) time % 60)));
 
             infoView.setText(infoString);
 
@@ -438,6 +443,7 @@ public class EditorActivity extends DrawerNavigationUI implements OnPathFinished
     @Override
     public void editorToolChanged(EditorTools tools) {
         setupTool();
+        PolygonToolsImpl.reset();
     }
 
     @Override
@@ -464,7 +470,7 @@ public class EditorActivity extends DrawerNavigationUI implements OnPathFinished
     }
 
     @Override
-    protected void addToolbarFragment(){
+    protected void addToolbarFragment() {
         final int toolbarId = getToolbarId();
         editorListFragment = (EditorListFragment) fragmentManager.findFragmentById(toolbarId);
         if (editorListFragment == null) {
@@ -552,7 +558,7 @@ public class EditorActivity extends DrawerNavigationUI implements OnPathFinished
 
         EditorToolsImpl toolImpl = getToolImpl();
         toolImpl.onListItemClick(item);
-
+        // TODO: implement adding points to polygon
         if (zoomToFit) {
             zoomToFitSelected();
         }
@@ -562,9 +568,11 @@ public class EditorActivity extends DrawerNavigationUI implements OnPathFinished
     public void zoomToFitSelected() {
         final EditorMapFragment planningMapFragment = gestureMapFragment.getMapFragment();
         List<MissionItemProxy> selected = missionProxy.selection.getSelected();
+
         if (selected.isEmpty()) {
             planningMapFragment.zoomToFit();
         } else {
+            selected = missionProxy.getSelectedCoordsWithNeighbourhood(selected);
             planningMapFragment.zoomToFit(MissionProxy.getVisibleCoords(selected));
         }
     }
