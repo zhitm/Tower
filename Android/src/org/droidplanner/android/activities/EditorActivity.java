@@ -85,7 +85,7 @@ public class EditorActivity extends DrawerNavigationUI implements OnPathFinished
             switch (action) {
                 case MissionProxy.ACTION_MISSION_PROXY_UPDATE:
                     // TODO: Fix ZoomToFit()
-                    if (mAppPrefs.isZoomToFitEnable() && missionProxy.getSurveyCount() > 0)
+                    if (mAppPrefs.isZoomToFitEnable() && missionProxy.getSurveyCount() == 0)
                         gestureMapFragment.getMapFragment().zoomToFit();
                     // FALL THROUGH
                 case AttributeEvent.PARAMETERS_REFRESH_COMPLETED:
