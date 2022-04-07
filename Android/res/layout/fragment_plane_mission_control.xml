@@ -95,7 +95,7 @@
                 />
 
             <Button
-                android:id="@+id/mc_follow"
+                android:id="@+id/mc_goto"
                 style="@style/flightControlButton.Row"
                 android:layout_width="75dp"
                 android:layout_height="match_parent"

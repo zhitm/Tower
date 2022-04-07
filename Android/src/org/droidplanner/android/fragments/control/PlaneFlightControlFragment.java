@@ -164,7 +164,7 @@ public class PlaneFlightControlFragment extends BaseFlightControlFragment {
         autoBtn = (Button) view.findViewById(R.id.mc_autoBtn);
         autoBtn.setOnClickListener(this);
 
-        followBtn = (Button) view.findViewById(R.id.mc_follow);
+        followBtn = (Button) view.findViewById(R.id.mc_goto);
         followBtn.setOnClickListener(this);
     }
 
@@ -335,7 +335,7 @@ public class PlaneFlightControlFragment extends BaseFlightControlFragment {
                 eventBuilder.setAction(ACTION_FLIGHT_ACTION_BUTTON).setLabel(VehicleMode.PLANE_AUTO.getLabel());
                 break;
 
-            case R.id.mc_follow: {
+            case R.id.mc_goto: {
                 toggleFollowMe();
                 break;
             }

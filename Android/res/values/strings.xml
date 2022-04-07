@@ -274,6 +274,8 @@
     <string name="mission_control_pause">Pause</string>
     <string name="mission_control_auto">Auto</string>
     <string name="mission_control_follow">GoTo</string>
+    <string name="mission_control_goto">Go To</string>
+    <string name="mission_control_look_at">Look at</string>
     <string name="mission_control_dronie">Dronie</string>
     <string name="mission_control_condition_yaw_angle">Target angle</string>
     <string name="mission_control_condition_yaw_relative">Relative Angle</string>

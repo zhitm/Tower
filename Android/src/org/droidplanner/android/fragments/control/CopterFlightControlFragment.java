@@ -117,7 +117,8 @@ public class CopterFlightControlFragment extends BaseFlightControlFragment imple
                     /* FALL - THROUGH */
                 case AttributeEvent.FOLLOW_UPDATE:
                     updateFlightModeButtons();
-                    updateFollowButton();
+                    //updateFollowButton();
+                    updateGuidedModeButtons();
                     break;
 
                 case AttributeEvent.MISSION_DRONIE_CREATED:
@@ -141,11 +142,13 @@ public class CopterFlightControlFragment extends BaseFlightControlFragment imple
     private View mArmedButtons;
     private View mInFlightButtons;
 
-    private Button followBtn;
+    private Button gotoBtn;
     private Button homeBtn;
     private Button landBtn;
     private Button pauseBtn;
     private Button autoBtn;
+    private Button lookAt;
+
 
     private int orangeColor;
 
@@ -192,8 +195,11 @@ public class CopterFlightControlFragment extends BaseFlightControlFragment imple
         final Button takeoffInAuto = (Button) view.findViewById(R.id.mc_TakeoffInAutoBtn);
         takeoffInAuto.setOnClickListener(this);
 
-        followBtn = (Button) view.findViewById(R.id.mc_follow);
-        followBtn.setOnClickListener(this);
+        gotoBtn = (Button) view.findViewById(R.id.mc_goto);
+        gotoBtn.setOnClickListener(this);
+
+        lookAt = (Button) view.findViewById(R.id.mc_lookAt);
+        lookAt.setOnClickListener(this);
 
         final Button dronieBtn = (Button) view.findViewById(R.id.mc_dronieBtn);
         dronieBtn.setOnClickListener(this);
@@ -206,9 +212,9 @@ public class CopterFlightControlFragment extends BaseFlightControlFragment imple
 
         setupButtonsByFlightState();
         updateFlightModeButtons();
-        updateFollowButton();
-        updateGotoButton();
-
+        //updateFollowButton();
+        //updateGotoButton();
+        updateGuidedModeButtons();
         getBroadcastManager().registerReceiver(eventReceiver, eventFilter);
     }
 
@@ -262,9 +268,10 @@ public class CopterFlightControlFragment extends BaseFlightControlFragment imple
                     FollowApi.getApi(drone).disableFollowMe();
                 }
 
-                VehicleApi.getApi(drone).setVehicleMode(VehicleMode.COPTER_GUIDED);
-                //ControlApi.getApi(drone).pauseAtCurrentLocation(null);
+                //VehicleApi.getApi(drone).setVehicleMode(VehicleMode.COPTER_GUIDED);
+                ControlApi.getApi(drone).pauseAtCurrentLocation(null);
                 eventBuilder.setAction(ACTION_FLIGHT_ACTION_BUTTON).setLabel("Pause");
+                VehicleApi.getApi(drone).setVehicleMode(VehicleMode.COPTER_BRAKE);
                 break;
             }
 
@@ -278,13 +285,20 @@ public class CopterFlightControlFragment extends BaseFlightControlFragment imple
                 eventBuilder.setAction(ACTION_FLIGHT_ACTION_BUTTON).setLabel(VehicleMode.COPTER_AUTO.getLabel());
                 break;
 
-            case R.id.mc_follow:
-                drone.lookAtMode = !drone.lookAtMode;
-                System.out.println("drone.lookAtMode changed to "+drone.lookAtMode);
-                updateGotoButton();
+            case R.id.mc_goto:
+                Drone.currentLongPressState = Drone.currentLongPressState == Drone.LongPressState.GOTO? Drone.LongPressState.NO_SELECTED : Drone.LongPressState.GOTO;
+                //drone.lookAtMode = !drone.lookAtMode;
+                //System.out.println("drone.lookAtMode changed to "+drone.lookAtMode);
+                updateGuidedModeButtons();
                 //toggleFollowMe();
                 break;
-
+            case R.id.mc_lookAt:
+                Drone.currentLongPressState = Drone.currentLongPressState == Drone.LongPressState.LOOK_AT? Drone.LongPressState.NO_SELECTED : Drone.LongPressState.LOOK_AT;
+                //drone.lookAtMode = !drone.lookAtMode;
+                //System.out.println("drone.lookAtMode changed to "+drone.lookAtMode);
+                updateGuidedModeButtons();
+                break;
+                //toggleFollowMe();
             case R.id.mc_dronieBtn:
                 getDronieConfirmation();
                 eventBuilder.setAction(ACTION_FLIGHT_ACTION_BUTTON).setLabel("Dronie uploaded");
@@ -363,14 +377,18 @@ public class CopterFlightControlFragment extends BaseFlightControlFragment imple
         if (flightMode == null)
             return;
 
+        pauseBtn.setBackgroundResource(R.drawable.flight_action_row_bg_selector);
+        pauseBtn.setActivated(false);
         switch (flightMode) {
             case COPTER_AUTO:
                 autoBtn.setActivated(true);
                 break;
 
             case COPTER_BRAKE:
-            case COPTER_GUIDED:
                 pauseBtn.setActivated(true);
+                break;
+            case COPTER_GUIDED:
+                pauseBtn.setBackgroundColor(orangeColor);
                 break;
 
             case COPTER_RTL:
@@ -392,25 +410,34 @@ public class CopterFlightControlFragment extends BaseFlightControlFragment imple
         autoBtn.setActivated(false);
     }
 
-    private void updateGotoButton(){
+    private void updateGuidedModeButtons(){
+        updateGoToButton();
+        updateLookAtButton();
+    }
+
+    private void updateGoToButton(){
         final Drone drone = getDrone();
-        if (!drone.lookAtMode){
-//            State droneState = getDrone().getAttribute(AttributeType.STATE);
-//            if (droneState == null)
-//                return;
-//
-//            final VehicleMode flightMode = droneState.getVehicleMode();
-//            if (flightMode == null)
-//                return;
-//            if (flightMode != VehicleMode.COPTER_GUIDED) {
-//            }
-            VehicleApi.getApi(drone).setVehicleMode(VehicleMode.COPTER_GUIDED);
-            followBtn.setBackgroundColor(orangeColor);
+
+        if (Drone.currentLongPressState == Drone.LongPressState.GOTO){
+            //VehicleApi.getApi(drone).setVehicleMode(VehicleMode.COPTER_GUIDED);
+            gotoBtn.setBackgroundColor(orangeColor);
         }
         else{
-            followBtn.setActivated(false);
-            followBtn.setBackgroundResource(R.drawable.flight_action_row_bg_selector);
-            //followBtn.setBackgroundColor(getResources().getColor(R.color.transparent_light));
+            gotoBtn.setActivated(false);
+            gotoBtn.setBackgroundResource(R.drawable.flight_action_row_bg_selector);
+        }
+    }
+
+    private void updateLookAtButton(){
+        final Drone drone = getDrone();
+
+        if (Drone.currentLongPressState == Drone.LongPressState.LOOK_AT){
+            //VehicleApi.getApi(drone).setVehicleMode(VehicleMode.COPTER_GUIDED);
+            lookAt.setBackgroundColor(orangeColor);
+        }
+        else{
+            lookAt.setActivated(false);
+            lookAt.setBackgroundResource(R.drawable.flight_action_row_bg_selector);
         }
     }
 
@@ -421,20 +448,20 @@ public class CopterFlightControlFragment extends BaseFlightControlFragment imple
 
         switch (followState.getState()) {
             case FollowState.STATE_START:
-                followBtn.setBackgroundColor(orangeColor);
+                gotoBtn.setBackgroundColor(orangeColor);
                 break;
 
             case FollowState.STATE_RUNNING:
-                followBtn.setActivated(true);
-                followBtn.setBackgroundResource(R.drawable.flight_action_row_bg_selector);
+                gotoBtn.setActivated(true);
+                gotoBtn.setBackgroundResource(R.drawable.flight_action_row_bg_selector);
                 break;
 
             default:
-                followBtn.setActivated(false);
-                followBtn.setBackgroundResource(R.drawable.flight_action_row_bg_selector);
+                gotoBtn.setActivated(false);
+                gotoBtn.setBackgroundResource(R.drawable.flight_action_row_bg_selector);
                 break;
         }
-        updateGotoButton();
+        updateGuidedModeButtons();
     }
 
     private void resetButtonsContainerVisibility() {

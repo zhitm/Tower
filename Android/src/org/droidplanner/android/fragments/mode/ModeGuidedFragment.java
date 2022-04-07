@@ -141,13 +141,14 @@ public class ModeGuidedFragment extends ApiListenerFragment implements
     public void onGuidedClick(LatLong coord) {
         final Drone drone = getDrone();
         if (drone != null) {
-            ControlApi.getApi(drone).lookAt(new LatLongAlt(coord, 0), false, null);         //we anyway should scrim in our flight direction
-            if (!drone.lookAtMode)
+            if (Drone.currentLongPressState == Drone.LongPressState.LOOK_AT) {
+                ControlApi.getApi(drone).lookAt(new LatLongAlt(coord, 0), false, null);
+            }
+            if (Drone.currentLongPressState == Drone.LongPressState.GOTO)
             {
+                //ControlApi.getApi(drone).lookAt(new LatLongAlt(coord, 0), false, null);
                 ControlApi.getApi(drone).lookAt(new LatLongAlt(coord, 0), false, null);
                 ControlApi.getApi(drone).goTo(coord, false, null);
-                //drone.lookAtMode = true;
-                //Altitude alt = drone.getAttribute(AttributeType.ALTITUDE);
             }
         }
     }

@@ -228,11 +228,13 @@
     <string name="mission_control_home">Дом</string>
     <string name="mission_control_arm">Вкл. моторы</string>
     <string name="mission_control_disarm">Выкл. моторы</string>
-    <string name="mission_control_land">Земля</string>
+    <string name="mission_control_land">Приземлиться</string>
     <string name="mission_control_takeoff">Отгул</string>
     <string name="mission_control_pause">Пауза</string>
     <string name="mission_control_auto">Авто</string>
     <string name="mission_control_follow">Лететь в точку</string>
+    <string name="mission_control_goto">Лететь в точку</string>
+    <string name="mission_control_look_at">Смотреть в точку</string>
     <string name="mission_control_dronie">Дрони</string>
     <string name="mission_control_condition_yaw_angle">Целевой угол</string>
     <string name="mission_control_condition_yaw_relative">Относительный угол</string>
@@ -478,7 +480,7 @@
     <string name="label_udp_port">UDP-порт:</string>
     <string name="toast_mission_sent">Путевые точки отправлены</string>
     <string name="speak_mission_sent">Путевые точки сохранены в Drone</string>
-    <string name="toast_mission_received">Путевые точки, полученные от дрона</string>
+    <string name="toast_mission_received">Путевые точки, полученны от дрона</string>
     <string name="speak_mission_received">Полученные путевые точки</string>
     <string name="speak_heartbeat_first">Связаны</string>
     <string name="speak_heartbeat_timeout">Канал передачи данных потерян, проверьте соединение.</string>

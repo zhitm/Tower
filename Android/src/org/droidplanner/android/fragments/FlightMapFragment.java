@@ -13,8 +13,11 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Toast;
 
+import com.google.android.gms.analytics.HitBuilders;
 import com.google.android.gms.maps.model.LatLng;
+import com.o3dr.android.client.Drone;
 import com.o3dr.android.client.apis.ControlApi;
+import com.o3dr.android.client.apis.VehicleApi;
 import com.o3dr.services.android.lib.coordinate.LatLong;
 import com.o3dr.services.android.lib.coordinate.LatLongAlt;
 import com.o3dr.services.android.lib.drone.attribute.AttributeEvent;
@@ -23,7 +26,10 @@ import com.o3dr.services.android.lib.drone.mission.item.MissionItem;
 import com.o3dr.services.android.lib.drone.property.Gps;
 import com.o3dr.services.android.lib.drone.property.GuidedState;
 import com.o3dr.services.android.lib.drone.property.State;
+import com.o3dr.services.android.lib.drone.property.Type;
+import com.o3dr.services.android.lib.drone.property.VehicleMode;
 
+import org.droidplanner.android.DroidPlannerApp;
 import org.droidplanner.android.R;
 import org.droidplanner.android.activities.EditorActivity;
 import org.droidplanner.android.dialogs.GuidedDialog;
@@ -34,9 +40,11 @@ import org.droidplanner.android.maps.MarkerInfo;
 import org.droidplanner.android.proxy.mission.MissionProxy;
 import org.droidplanner.android.utils.MapUtils;
 import org.droidplanner.android.utils.SpaceTime;
+import org.droidplanner.android.utils.analytics.GAUtils;
 import org.droidplanner.android.utils.prefs.AutoPanMode;
 
 import java.util.List;
+import java.util.Objects;
 
 public class FlightMapFragment extends DroneMap implements DPMap.OnMapLongClickListener,
         DPMap.OnMarkerClickListener, DPMap.OnMarkerDragListener, GuidedDialogListener {
@@ -188,10 +196,36 @@ public class FlightMapFragment extends DroneMap implements DPMap.OnMapLongClickL
                 if(guidedClickListener != null)
                     guidedClickListener.onGuidedClick(coord);
             } else {
-                GuidedDialog dialog = new GuidedDialog();
-                dialog.setCoord(MapUtils.coordToLatLng(coord));
-                dialog.setListener(this);
-                dialog.show(getChildFragmentManager(), "GUIDED dialog");
+                if (Drone.currentLongPressState == Drone.LongPressState.LOOK_AT || Drone.currentLongPressState == Drone.LongPressState.GOTO){
+                    if (coord != null) {
+                        drone = ((DroidPlannerApp) Objects.requireNonNull(getActivity()).getApplication()).getDrone();
+                        Type droneType = drone.getAttribute(AttributeType.TYPE);
+
+                        if (droneType.getDroneType() == Type.TYPE_COPTER) {
+                            VehicleApi.getApi(drone).setVehicleMode(VehicleMode.COPTER_GUIDED);
+
+                            //Record the attempt to change flight modes
+                            HitBuilders.EventBuilder eventBuilder = new HitBuilders.EventBuilder().setCategory(GAUtils.Category.FLIGHT).setAction("Flight mode changed").setLabel(String.valueOf(VehicleMode.COPTER_GUIDED));
+                            GAUtils.sendEvent(eventBuilder);
+                        }
+                        if (Drone.currentLongPressState == Drone.LongPressState.LOOK_AT) {
+                            ControlApi.getApi(drone).lookAt(new LatLongAlt(coord.getLatitude(), coord.getLongitude(), 0), false, null);         // LatLong != LatLng WTF?!
+                        }
+                        if (Drone.currentLongPressState == Drone.LongPressState.GOTO) {
+                            onForcedGuidedPoint(new LatLng(coord.getLatitude(), coord.getLongitude()));
+                        }
+                        if (Drone.currentLongPressState == Drone.LongPressState.NO_SELECTED) {
+
+                        }
+                        //
+                    }
+                }
+                else {
+                    GuidedDialog dialog = new GuidedDialog();
+                    dialog.setCoord(MapUtils.coordToLatLng(coord));
+                    dialog.setListener(this);
+                    dialog.show(getChildFragmentManager(), "GUIDED dialog");
+                }
             }
         }
     }

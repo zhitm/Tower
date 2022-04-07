@@ -48,33 +48,60 @@ public class GuidedDialog extends DialogFragment {
     @Override
     public Dialog onCreateDialog(Bundle savedInstanceState) {
         AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
+        if (Drone.currentLongPressState == Drone.LongPressState.NO_SELECTED) {
+            builder.setMessage(R.string.guided_mode_warning)
+                    .setPositiveButton(android.R.string.ok, new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int id) {
+                            if (coord != null) {
+                                drone = ((DroidPlannerApp) Objects.requireNonNull(getActivity()).getApplication()).getDrone();
+                                Type droneType = drone.getAttribute(AttributeType.TYPE);
 
-        builder.setMessage(R.string.guided_mode_warning)
-                .setPositiveButton(android.R.string.ok, new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int id) {
-                        if (coord != null) {
-							drone = ((DroidPlannerApp) Objects.requireNonNull(getActivity()).getApplication()).getDrone();
-							Type droneType = drone.getAttribute(AttributeType.TYPE);
+                                if (droneType.getDroneType() == Type.TYPE_COPTER) {
+                                    VehicleApi.getApi(drone).setVehicleMode(VehicleMode.COPTER_GUIDED);
 
-							if (droneType.getDroneType() == Type.TYPE_COPTER) {
-                                VehicleApi.getApi(drone).setVehicleMode(VehicleMode.COPTER_GUIDED);
+                                    //Record the attempt to change flight modes
+                                    HitBuilders.EventBuilder eventBuilder = new HitBuilders.EventBuilder().setCategory(GAUtils.Category.FLIGHT).setAction("Flight mode changed").setLabel(String.valueOf(VehicleMode.COPTER_GUIDED));
+                                    GAUtils.sendEvent(eventBuilder);
+                                }
+                                if (Drone.currentLongPressState == Drone.LongPressState.LOOK_AT) {
+                                    ControlApi.getApi(drone).lookAt(new LatLongAlt(coord.latitude, coord.longitude, 0), false, null);         // LatLong != LatLng WTF?!
+                                }
+                                if (Drone.currentLongPressState == Drone.LongPressState.GOTO) {
+                                    listener.onForcedGuidedPoint(coord);
+                                }
+                                if (Drone.currentLongPressState == Drone.LongPressState.NO_SELECTED) {
 
-                                //Record the attempt to change flight modes
-                                HitBuilders.EventBuilder eventBuilder = new HitBuilders.EventBuilder().setCategory(GAUtils.Category.FLIGHT).setAction("Flight mode changed").setLabel(String.valueOf(VehicleMode.COPTER_GUIDED));
-                                GAUtils.sendEvent(eventBuilder);
+                                }
+                                //
                             }
-							if (drone.lookAtMode){
-                                ControlApi.getApi(drone).lookAt(new LatLongAlt(coord.latitude,coord.longitude, 0), false, null);         // LatLong != LatLng WTF?!
-                            }
-                            else{
-                                listener.onForcedGuidedPoint(coord);
-                            }
-                            //
                         }
-                    }
-                }).setNegativeButton(android.R.string.cancel, null);
+                    }).setNegativeButton(android.R.string.cancel, null);
+        }
+        if (Drone.currentLongPressState == Drone.LongPressState.LOOK_AT || Drone.currentLongPressState == Drone.LongPressState.GOTO) {
+            if (coord != null) {
+                drone = ((DroidPlannerApp) Objects.requireNonNull(getActivity()).getApplication()).getDrone();
+                Type droneType = drone.getAttribute(AttributeType.TYPE);
 
+                if (droneType.getDroneType() == Type.TYPE_COPTER) {
+                    VehicleApi.getApi(drone).setVehicleMode(VehicleMode.COPTER_GUIDED);
+
+                    //Record the attempt to change flight modes
+                    HitBuilders.EventBuilder eventBuilder = new HitBuilders.EventBuilder().setCategory(GAUtils.Category.FLIGHT).setAction("Flight mode changed").setLabel(String.valueOf(VehicleMode.COPTER_GUIDED));
+                    GAUtils.sendEvent(eventBuilder);
+                }
+                if (Drone.currentLongPressState == Drone.LongPressState.LOOK_AT) {
+                    ControlApi.getApi(drone).lookAt(new LatLongAlt(coord.latitude, coord.longitude, 0), false, null);         // LatLong != LatLng WTF?!
+                }
+                if (Drone.currentLongPressState == Drone.LongPressState.GOTO) {
+                    listener.onForcedGuidedPoint(coord);
+                }
+                if (Drone.currentLongPressState == Drone.LongPressState.NO_SELECTED) {
+
+                }
+                //
+            }
+        }
         return builder.create();
     }
 

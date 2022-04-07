@@ -76,12 +76,12 @@
     </androidx.cardview.widget.CardView>
 
     <androidx.cardview.widget.CardView
-        android:layout_width="@dimen/flight_actions_container_width"
-        android:layout_height="wrap_content"
-        android:visibility="gone"
-        tools:visibility="gone"
         android:id="@+id/mc_in_flight_buttons"
-        android:layout_gravity="center_horizontal">
+        android:layout_width="420dp"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_horizontal"
+        android:visibility="gone"
+        tools:visibility="gone">
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -91,60 +91,70 @@
             <Button
                 android:id="@+id/mc_homeBtn"
                 style="@style/flightControlButton.Row"
-                android:layout_width="75dp"
+                android:layout_width="90dp"
                 android:layout_height="match_parent"
-                android:drawableTop="@drawable/ic_home_active"
                 android:layout_weight="1"
-                android:text="@string/mission_control_home"/>
+                android:drawableTop="@drawable/ic_home_active"
+                android:text="@string/mission_control_home" />
 
             <Button
                 android:id="@+id/mc_land"
                 style="@style/flightControlButton.Row"
-                android:layout_width="75dp"
+                android:layout_width="90dp"
                 android:layout_height="match_parent"
+                android:layout_weight="1"
                 android:drawableTop="@drawable/ic_land_active"
                 android:text="@string/mission_control_land"
-                android:layout_weight="1"
-                tools:ignore="ContentDescription"/>
+                tools:ignore="ContentDescription" />
 
             <Button
                 android:id="@+id/mc_pause"
                 style="@style/flightControlButton.Row"
-                android:layout_width="75dp"
+                android:layout_width="90dp"
                 android:layout_height="match_parent"
+                android:layout_weight="1"
                 android:drawableTop="@drawable/ic_pause_active"
                 android:text="@string/mission_control_pause"
-                android:layout_weight="1"
-                tools:ignore="ContentDescription"/>
+                tools:ignore="ContentDescription" />
 
             <Button
                 android:id="@+id/mc_autoBtn"
                 style="@style/flightControlButton.Row"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
+                android:layout_width="90dp"
+                android:layout_height="match_parent"
                 android:layout_weight="1"
                 android:drawableTop="@drawable/ic_auto_active"
                 android:text="@string/mission_control_auto"
-                tools:ignore="ContentDescription"/>
+                tools:ignore="ContentDescription" />
 
             <Button
-                android:id="@+id/mc_follow"
+                android:id="@+id/mc_goto"
                 style="@style/flightControlButton.Row"
-                android:layout_width="75dp"
+                android:layout_width="90dp"
                 android:layout_height="match_parent"
-                android:drawableTop="@drawable/ic_follow_active"
-                android:text="@string/mission_control_follow"
                 android:layout_weight="1"
-                tools:ignore="ContentDescription"/>
+                android:drawableTop="@drawable/ic_pin_drop_grey_700_24dp"
+                android:text="@string/mission_control_goto"
+                tools:ignore="ContentDescription" />
+
+            <Button
+                android:id="@+id/mc_lookAt"
+                style="@style/flightControlButton.Row"
+                android:layout_width="90dp"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:drawableTop="@drawable/ic_navigation_grey_700_24dp"
+                android:text="@string/mission_control_look_at"
+                tools:ignore="ContentDescription" />
 
             <ImageView
                 android:id="@+id/reveal_toggler"
                 android:layout_width="36dp"
-                android:layout_height="48dp"
+                android:layout_height="75dp"
                 android:layout_gravity="center_vertical"
                 android:background="@drawable/flight_action_row_bg_selector"
-                android:src="@drawable/ic_more_vert_black_24dp"
-                android:scaleType="center"/>
+                android:scaleType="center"
+                android:src="@drawable/ic_more_vert_black_24dp" />
 
         </LinearLayout>
     </androidx.cardview.widget.CardView>
