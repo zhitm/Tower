@@ -13,6 +13,7 @@
     <string name="editor">Editor</string>
     <string name="upload_mission">Upload mission</string>
     <string name="download_mission">Download mission</string>
+    <string name="show_full_interface">Show full interface</string>
 
     <!-- Drone Setup tabs -->
     <string name="screen_cal">Calibration</string>

@@ -6,6 +6,7 @@ import android.content.SharedPreferences;
 import android.preference.PreferenceManager;
 import androidx.localbroadcastmanager.content.LocalBroadcastManager;
 import android.text.TextUtils;
+import android.view.View;
 
 import com.o3dr.android.client.Drone;
 import com.o3dr.services.android.lib.drone.attribute.AttributeType;
@@ -48,6 +49,9 @@ public class DroidPlannerPrefs {
      */
     public static final String PREF_USAGE_STATISTICS = "pref_usage_statistics";
     public static final boolean DEFAULT_USAGE_STATISTICS = true;
+
+    public static final String PREF_SHOW_FULL_INTERFACE = "pref_show_full_interface";
+    public static final boolean DEFAULT_SHOW_FULL_INTERFACE = false;
 
     public static final String PREF_CONNECTION_TYPE = "pref_connection_param_type";
     public static final String DEFAULT_CONNECTION_TYPE = String.valueOf(ConnectionType.TYPE_USB);
@@ -308,6 +312,10 @@ public class DroidPlannerPrefs {
      */
     public boolean isUsageStatisticsEnabled() {
         return prefs.getBoolean(PREF_USAGE_STATISTICS, DEFAULT_USAGE_STATISTICS);
+    }
+
+    public boolean isFullShowInterfaceEnabled() {
+        return prefs.getBoolean(PREF_SHOW_FULL_INTERFACE, DEFAULT_SHOW_FULL_INTERFACE);
     }
 
     public void setConnectionParameterType(@ConnectionType.Type int connectionType) {

@@ -19,10 +19,11 @@ import android.preference.Preference;
 import android.preference.PreferenceCategory;
 import android.preference.PreferenceFragment;
 import androidx.localbroadcastmanager.content.LocalBroadcastManager;
+
+import android.preference.PreferenceScreen;
 import android.util.Log;
 import android.widget.Toast;
 
-import com.google.android.gms.analytics.GoogleAnalytics;
 import com.google.android.gms.analytics.HitBuilders;
 import com.o3dr.android.client.Drone;
 import com.o3dr.services.android.lib.drone.attribute.AttributeEvent;
@@ -158,6 +159,36 @@ public class SettingsFragment extends PreferenceFragment implements OnSharedPref
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        initPrefScreen();
+
+        updateFullPrefsList(DroidPlannerPrefs.getInstance(getContext()).isFullShowInterfaceEnabled());
+
+    }
+
+    private void updateFullPrefsList(Boolean enabled){
+        if (!enabled) {
+            String[] prefsToRemove = new String[]{"pref_cat_usage_statistics", "pref_cat_about"};
+            updateExtraPref(prefsToRemove, enabled);
+
+            Preference setting = findPreference("pref_advanced");
+            PreferenceCategory catPref = (PreferenceCategory) findPreference("pref_cat_general");
+            if(catPref != null && setting != null) {
+                catPref.removePreference(setting);
+            }
+            else{
+                System.out.println("CANNOT REMOVE SETTING");
+            }
+        }
+        else{
+            PreferenceScreen screen = getPreferenceScreen();
+            screen.removeAll();
+
+            initPrefScreen();
+
+        }
+    }
+
+    private void initPrefScreen(){
         addPreferencesFromResource(R.xml.preferences);
 
         initSummaryPerPrefs();
@@ -175,22 +206,40 @@ public class SettingsFragment extends PreferenceFragment implements OnSharedPref
             }
         }
 
-        // Set the usage statistics preference
-        final String usageStatKey = DroidPlannerPrefs.PREF_USAGE_STATISTICS;
-        final CheckBoxPreference usageStatPref = (CheckBoxPreference) findPreference(usageStatKey);
-        if (usageStatPref != null) {
-            usageStatPref
+        final String usageStatKey = DroidPlannerPrefs.PREF_SHOW_FULL_INTERFACE;
+        final CheckBoxPreference enableFullListPref = (CheckBoxPreference) findPreference(usageStatKey);
+        enableFullListPref.setChecked(true);
+        if (enableFullListPref != null) {
+            enableFullListPref
                     .setOnPreferenceChangeListener(new Preference.OnPreferenceChangeListener() {
                         @Override
                         public boolean onPreferenceChange(Preference preference, Object newValue) {
-                            // Update the google analytics singleton.
                             final boolean optIn = (Boolean) newValue;
-                            final GoogleAnalytics analytics = GoogleAnalytics.getInstance(context);
-                            analytics.setAppOptOut(!optIn);
+                            System.out.println("New value is "+optIn);
+
+                            updateFullPrefsList(optIn);
                             return true;
                         }
                     });
         }
+
+        // Set the usage statistics preference
+//        final String usageStatKey = DroidPlannerPrefs.PREF_USAGE_STATISTICS;
+//        final CheckBoxPreference usageStatPref = (CheckBoxPreference) findPreference(usageStatKey);
+
+//        if (usageStatPref != null) {
+//            usageStatPref
+//                    .setOnPreferenceChangeListener(new Preference.OnPreferenceChangeListener() {
+//                        @Override
+//                        public boolean onPreferenceChange(Preference preference, Object newValue) {
+//                            // Update the google analytics singleton.
+//                            final boolean optIn = (Boolean) newValue;
+//                            final GoogleAnalytics analytics = GoogleAnalytics.getInstance(context);
+//                            analytics.setAppOptOut(!optIn);
+//                            return true;
+//                        }
+//                    });
+//        }
 
         try {
             Preference versionPref = findPreference(DroidPlannerPrefs.PREF_APP_VERSION);
@@ -213,6 +262,33 @@ public class SettingsFragment extends PreferenceFragment implements OnSharedPref
         setupAltitudePreferences();
         setupCreditsPage();
         setupSpeedPreferences();
+    }
+
+    private void updateExtraPref(String[] prefCodes, Boolean enabled){
+        if (!enabled) {
+            PreferenceScreen screen = getPreferenceScreen();
+            for (String pref : prefCodes) {
+                Preference setting = findPreference(pref);
+                if (screen != null && setting != null) {
+                    screen.removePreference(setting);
+                    //screen.removeAll();
+                } else {
+                    System.out.println("CANNOT REMOVE SETTING");
+                }
+            }
+        }
+        else{
+            PreferenceScreen screen = getPreferenceScreen();
+            for (String pref : prefCodes) {
+                Preference setting = findPreference(pref);
+                if (screen != null && setting != null) {
+                    screen.addPreference(setting);
+                    //screen.removeAll();
+                } else {
+                    System.out.println("CANNOT ADD SETTING");
+                }
+            }
+        }
     }
 
     private void setupWidgetsPreferences(){

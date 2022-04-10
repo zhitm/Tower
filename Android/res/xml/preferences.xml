@@ -1,9 +1,18 @@
 <?xml version="1.0" encoding="utf-8"?>
-<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
-
+<PreferenceScreen xmlns:tools="http://schemas.android.com/tools"
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
     <!-- Contains preferences related to the app. -->
-    <PreferenceCategory android:title="@string/label_general">
-
+    <PreferenceCategory
+        android:title="@string/label_general"
+        android:key="pref_cat_general"
+        >
+        <CheckBoxPreference
+            android:defaultValue="false"
+            android:enabled="true"
+            android:key="pref_show_full_interface"
+            android:title="@string/show_full_interface"
+            />
         <!-- Preferences related to the user interface. -->
         <PreferenceScreen
             android:key="pref_ui"
@@ -258,17 +267,23 @@
     </PreferenceCategory>
 
     <!-- Analytics related preferences. -->
-    <PreferenceCategory android:title="@string/usage_statistics">
+    <PreferenceCategory
+        android:title="@string/usage_statistics"
+        android:key="pref_cat_usage_statistics"
+        >
         <CheckBoxPreference
-            android:defaultValue="true"
-            android:enabled="true"
+            android:defaultValue="false"
+            android:enabled="false"
             android:key="pref_usage_statistics"
             android:summary="@string/pref_usage_statistics_summary"
-            android:title="@string/pref_usage_statistics_title" />
+            android:title="@string/pref_usage_statistics_title"
+            />
     </PreferenceCategory>
 
     <!-- App and drone misc information -->
-    <PreferenceCategory android:title="@string/about">
+    <PreferenceCategory android:title="@string/about"
+        android:key="pref_cat_about"
+        >
         <Preference
             android:enabled="false"
             android:key="pref_version"

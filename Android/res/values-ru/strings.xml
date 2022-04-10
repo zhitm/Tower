@@ -13,6 +13,9 @@
     <string name="editor">Редактор миссии</string>
     <string name="upload_mission">Загрузить миссию</string>
     <string name="download_mission">Скачать миссию</string>
+    <string name="show_full_interface">Показать полную версию интерфейса</string>
+
+
     <string name="screen_cal">Калибровка</string>
     <string name="screen_checklist">Контрольный список</string>
     <string name="screen_parameters">Параметры</string>
