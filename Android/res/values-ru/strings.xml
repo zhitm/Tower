@@ -101,7 +101,7 @@
     <string name="waypointType_SplineWaypoint">Сплайн</string>
     <string name="waypointType_TakeOff">Взлет</string>
     <string name="waypointType_RTL">В точку ДОМ</string>
-    <string name="waypointType_Land">Приземлиться</string>
+    <string name="waypointType_Land">Посадка</string>
     <string name="waypointType_Change_Speed">Изменить скорость</string>
     <string name="waypointType_Condition_Yaw">Установить рыскание</string>
     <string name="waypointType_Camera_Trigger">Триггер камеры</string>
@@ -231,8 +231,8 @@
     <string name="mission_control_home">Дом</string>
     <string name="mission_control_arm">Вкл. моторы</string>
     <string name="mission_control_disarm">Выкл. моторы</string>
-    <string name="mission_control_land">Приземлиться</string>
-    <string name="mission_control_takeoff">Отгул</string>
+    <string name="mission_control_land">Посадка</string>
+    <string name="mission_control_takeoff">Взлет</string>
     <string name="mission_control_pause">Пауза</string>
     <string name="mission_control_auto">Авто</string>
     <string name="mission_control_follow">Лететь в точку</string>
@@ -319,7 +319,7 @@
     <string name="locator">История БПЛА</string>
     <string name="open_tlog_file">Открыть файл журнала</string>
     <string name="status_waiting_for_gps">Ожидание GPS…</string>
-    <string name="unlock_slider_description">Горка</string>
+    <string name="unlock_slider_description">Разблокировать</string>
     <string name="pref_misc_title">Разнообразный</string>
     <string name="pref_dialogs_title">Диалоги настроек</string>
     <string name="pref_auto_insert_mission_takeoff_rtl_land_title">Автоматическая вставка \'Взлет\' и \'Домой\'/\'Приземлиться\' в миссию</string>
@@ -503,7 +503,7 @@
     <string name="warn_tts_accessibility">Убедитесь, что в настройках специальных возможностей системы включена функция «Текст в речь».</string>
     <string name="speak_armed">Заармлен</string>
     <string name="speak_disarmed">Разоружен</string>
-    <string name="speak_battery_notification">Батарея на %d%%</string>
+    <string name="speak_battery_notification">Заряд батареи %d%%</string>
     <string name="fly_mode_wire_a">Летать по проводам А</string>
     <string name="fly_mode_wire_b">Летать по проводам B</string>
     <string name="fly_mode_acro">Акробатический</string>
