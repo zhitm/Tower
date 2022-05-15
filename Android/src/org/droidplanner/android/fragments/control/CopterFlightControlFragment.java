@@ -19,6 +19,7 @@ import com.o3dr.android.client.apis.VehicleApi;
 import com.o3dr.services.android.lib.drone.attribute.AttributeEvent;
 import com.o3dr.services.android.lib.drone.attribute.AttributeEventExtra;
 import com.o3dr.services.android.lib.drone.attribute.AttributeType;
+import com.o3dr.services.android.lib.drone.property.Gps;
 import com.o3dr.services.android.lib.drone.property.State;
 import com.o3dr.services.android.lib.drone.property.VehicleMode;
 import com.o3dr.services.android.lib.gcs.follow.FollowState;
@@ -54,6 +55,7 @@ public class CopterFlightControlFragment extends BaseFlightControlFragment imple
         eventFilter.addAction(AttributeEvent.FOLLOW_STOP);
         eventFilter.addAction(AttributeEvent.FOLLOW_UPDATE);
         eventFilter.addAction(AttributeEvent.MISSION_DRONIE_CREATED);
+        eventFilter.addAction(AttributeEvent.SOUND_SERVO_STATE_UPDATE);
     }
 
     private final BroadcastReceiver eventReceiver = new BroadcastReceiver() {
@@ -66,6 +68,7 @@ public class CopterFlightControlFragment extends BaseFlightControlFragment imple
                 case AttributeEvent.STATE_DISCONNECTED:
                 case AttributeEvent.STATE_UPDATED:
                     setupButtonsByFlightState();
+
                     break;
 
                 case AttributeEvent.STATE_VEHICLE_MODE:
@@ -131,6 +134,9 @@ public class CopterFlightControlFragment extends BaseFlightControlFragment imple
                         }
                     }
                     break;
+                case AttributeEvent.SOUND_SERVO_STATE_UPDATE:
+                    updateSoundButton();
+                    break;
             }
         }
     };
@@ -148,6 +154,8 @@ public class CopterFlightControlFragment extends BaseFlightControlFragment imple
     private Button pauseBtn;
     private Button autoBtn;
     private Button lookAt;
+    private Button soundBtn;
+    private Button showCordsBtn;
 
 
     private int orangeColor;
@@ -203,6 +211,13 @@ public class CopterFlightControlFragment extends BaseFlightControlFragment imple
 
         final Button dronieBtn = (Button) view.findViewById(R.id.mc_dronieBtn);
         dronieBtn.setOnClickListener(this);
+
+        soundBtn = (Button) view.findViewById(R.id.mc_change_voice);
+        soundBtn.setOnClickListener(this);
+
+        showCordsBtn = (Button) view.findViewById(R.id.mc_show_coords);
+        showCordsBtn.setOnClickListener(this);
+
     }
 
     @Override
@@ -303,7 +318,26 @@ public class CopterFlightControlFragment extends BaseFlightControlFragment imple
                 getDronieConfirmation();
                 eventBuilder.setAction(ACTION_FLIGHT_ACTION_BUTTON).setLabel("Dronie uploaded");
                 break;
+            case R.id.mc_change_voice:
+                if (Drone.soundEnabled) {
+                    VehicleApi.getApi(drone).setServo(6, 900, null);
+                }
+                else{
+                    VehicleApi.getApi(drone).setServo(6, 2000, null);
+                }
+                updateSoundButton();
+                break;
+            case R.id.mc_show_coords:
 
+                final Gps droneGps = drone.getAttribute(AttributeType.GPS);
+                if (droneGps.isValid()) {
+                    String text = "GPS: " + droneGps.getPosition().getLatitude() +" "+droneGps.getPosition().getLongitude();
+                    android.content.ClipboardManager clipboard = (android.content.ClipboardManager) getActivity().getSystemService(Context.CLIPBOARD_SERVICE);
+                    android.content.ClipData clip = android.content.ClipData.newPlainText("TAG",text);
+                    clipboard.setPrimaryClip(clip);
+                    Toast.makeText(getActivity(), text + ".\n Скопировано в буфер обмена." , Toast.LENGTH_LONG).show();
+                }
+                break;
             default:
                 eventBuilder = null;
                 break;
@@ -400,6 +434,16 @@ public class CopterFlightControlFragment extends BaseFlightControlFragment imple
                 break;
             default:
                 break;
+        }
+
+        updateSoundButton();
+    }
+
+    private void updateSoundButton(){
+        soundBtn.setBackgroundResource(R.drawable.flight_action_row_bg_selector);
+        soundBtn.setActivated(false);
+        if (Drone.soundEnabled) {
+            soundBtn.setBackgroundColor(orangeColor);
         }
     }
 

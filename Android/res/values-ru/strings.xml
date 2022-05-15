@@ -238,6 +238,8 @@
     <string name="mission_control_follow">Лететь в точку</string>
     <string name="mission_control_goto">Лететь в точку</string>
     <string name="mission_control_look_at">Смотреть в точку</string>
+    <string name="mission_control_change_sound">Включить звук</string>
+    <string name="mission_control_found">Найден</string>
     <string name="mission_control_dronie">Дрони</string>
     <string name="mission_control_condition_yaw_angle">Целевой угол</string>
     <string name="mission_control_condition_yaw_relative">Относительный угол</string>

@@ -277,6 +277,8 @@
     <string name="mission_control_follow">GoTo</string>
     <string name="mission_control_goto">Go To</string>
     <string name="mission_control_look_at">Look at</string>
+    <string name="mission_control_change_sound">Turn on sound</string>
+    <string name="mission_control_found">Found</string>
     <string name="mission_control_dronie">Dronie</string>
     <string name="mission_control_condition_yaw_angle">Target angle</string>
     <string name="mission_control_condition_yaw_relative">Relative Angle</string>
