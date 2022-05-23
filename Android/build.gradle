@@ -7,6 +7,8 @@ apply plugin: 'io.fabric'
 apply plugin: 'com.google.gms.google-services'
 
 dependencies {
+    implementation 'androidx.work:work-runtime:2.7.1'
+
     implementation 'com.android.support:multidex:1.0.1'
 
     implementation "org.jetbrains.kotlin:kotlin-stdlib:$kotlin_version"
@@ -14,9 +16,9 @@ dependencies {
     implementation 'com.android.support:multidex:1.0.3'
     implementation "androidx.activity:activity-ktx:1.1.0-rc03"
 
-    implementation "com.google.android.gms:play-services-maps:15.0.1"
-    implementation "com.google.android.gms:play-services-location:15.0.1"
-    implementation "com.google.android.gms:play-services-analytics:15.0.0"
+    implementation "com.google.android.gms:play-services-maps:18.0.2"
+    implementation "com.google.android.gms:play-services-location:19.0.1"
+    implementation "com.google.android.gms:play-services-analytics:18.0.1"
 
     implementation "com.android.support:support-v4:${support_lib_version}"
     implementation "com.android.support:appcompat-v7:${support_lib_version}"

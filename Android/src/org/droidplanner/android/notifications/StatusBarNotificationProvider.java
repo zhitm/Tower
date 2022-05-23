@@ -94,11 +94,24 @@ public class StatusBarNotificationProvider implements NotificationHandler.Notifi
         this.drone = api;
         mAppPrefs = DroidPlannerPrefs.getInstance(context);
 
-        mNotificationIntent = PendingIntent.getActivity(mContext, 0, new Intent(mContext,
-                FlightActivity.class), 0);
 
-        mToggleConnectionIntent = PendingIntent
-                .getBroadcast(mContext, 0, new Intent(DroidPlannerApp.ACTION_TOGGLE_DRONE_CONNECTION), 0);
+
+        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.S) {
+            mNotificationIntent = PendingIntent.getActivity
+                    (mContext, 0, new Intent(mContext,
+                            FlightActivity.class), PendingIntent.FLAG_MUTABLE);
+
+            mToggleConnectionIntent = PendingIntent.getActivity
+                    (mContext, 0, new Intent(DroidPlannerApp.ACTION_TOGGLE_DRONE_CONNECTION), PendingIntent.FLAG_MUTABLE);
+        }
+        else
+        {
+            mNotificationIntent = PendingIntent.getActivity(mContext, 0, new Intent(mContext,
+                    FlightActivity.class), 0);
+
+            mToggleConnectionIntent = PendingIntent
+                    .getBroadcast(mContext, 0, new Intent(DroidPlannerApp.ACTION_TOGGLE_DRONE_CONNECTION), 0);
+        }
     }
 
     @Override

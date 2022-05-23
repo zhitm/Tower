@@ -156,7 +156,7 @@ class GoogleMapPrefFragment : MapProviderPreferences(), EditInputDialog.Listener
         findPreference(PREF_TILE_PROVIDER_SETTINGS_SCREEN) as PreferenceScreen
     }
 
-    private val providerSettingsScreens = ArrayMap<@TileProvider String, PreferenceCategory>(3)
+    private val providerSettingsScreens = ArrayMap<String, PreferenceCategory>(3)
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super<MapProviderPreferences>.onCreate(savedInstanceState)

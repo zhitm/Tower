@@ -149,15 +149,34 @@ public class UploaderService extends IntentService {
             Timber.i("Upload success: " + f + " url=" + viewURL);
 
             // Attach the view URL
-            final PendingIntent pIntent = PendingIntent.getActivity(UploaderService.this, 0,
-                new Intent(Intent.ACTION_VIEW, Uri.parse(viewURL)),
-                PendingIntent.FLAG_UPDATE_CURRENT);
+            PendingIntent pIntent = null;
+            if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.S) {
+                pIntent = PendingIntent.getActivity
+                        (UploaderService.this, 0, new Intent(Intent.ACTION_VIEW, Uri.parse(viewURL)), PendingIntent.FLAG_MUTABLE);
+            }
+            else
+            {
+                PendingIntent.getActivity(UploaderService.this, 0,
+                        new Intent(Intent.ACTION_VIEW, Uri.parse(viewURL)),
+                        PendingIntent.FLAG_UPDATE_CURRENT);
+            }
+
 
             final Intent sendIntent = new Intent(Intent.ACTION_SEND).putExtra(
                 Intent.EXTRA_TEXT, viewURL).setType("text/plain");
 
-            final PendingIntent sendPIntent = PendingIntent.getActivity(UploaderService.this,
-                0, sendIntent, PendingIntent.FLAG_UPDATE_CURRENT);
+            PendingIntent sendPIntent = null;
+
+            if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.S) {
+                sendPIntent = PendingIntent.getActivity
+                        (UploaderService.this, 0, sendIntent, PendingIntent.FLAG_MUTABLE);
+            }
+            else
+            {
+                PendingIntent.getActivity(UploaderService.this,
+                        0, sendIntent, PendingIntent.FLAG_UPDATE_CURRENT);
+            }
+
 
             final NotificationCompat.Builder notifBuilder = generateNotificationBuilder()
                 .setContentText(getString(R.string.uploader_success_message))
