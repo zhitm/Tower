@@ -37,6 +37,16 @@
                 android:text="@string/mission_control_dronie"
                 />
 
+            <Button
+                android:id="@+id/mc_change_voice2"
+                style="@style/flightControlButton.Row"
+                android:layout_width="90dp"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:drawableTop="@drawable/ic_status_rssi"
+                android:text="@string/mission_control_change_sound"
+                tools:ignore="ContentDescription" />
+
         </LinearLayout>
     </androidx.cardview.widget.CardView>
 

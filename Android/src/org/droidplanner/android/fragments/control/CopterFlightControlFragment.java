@@ -155,6 +155,7 @@ public class CopterFlightControlFragment extends BaseFlightControlFragment imple
     private Button autoBtn;
     private Button lookAt;
     private Button soundBtn;
+    private Button soundBtn2;
     private Button showCordsBtn;
 
 
@@ -218,6 +219,8 @@ public class CopterFlightControlFragment extends BaseFlightControlFragment imple
         showCordsBtn = (Button) view.findViewById(R.id.mc_show_coords);
         showCordsBtn.setOnClickListener(this);
 
+        soundBtn2 = (Button) view.findViewById(R.id.mc_change_voice2);
+        soundBtn2.setOnClickListener(this);
     }
 
     @Override
@@ -319,11 +322,12 @@ public class CopterFlightControlFragment extends BaseFlightControlFragment imple
                 eventBuilder.setAction(ACTION_FLIGHT_ACTION_BUTTON).setLabel("Dronie uploaded");
                 break;
             case R.id.mc_change_voice:
+            case R.id.mc_change_voice2:
                 if (Drone.soundEnabled) {
-                    VehicleApi.getApi(drone).setServo(6, 900, null);
+                    VehicleApi.getApi(drone).setServo(6, 0, null);
                 }
                 else{
-                    VehicleApi.getApi(drone).setServo(6, 2000, null);
+                    VehicleApi.getApi(drone).setServo(6, 20000, null);
                 }
                 updateSoundButton();
                 break;
@@ -442,8 +446,11 @@ public class CopterFlightControlFragment extends BaseFlightControlFragment imple
     private void updateSoundButton(){
         soundBtn.setBackgroundResource(R.drawable.flight_action_row_bg_selector);
         soundBtn.setActivated(false);
+        soundBtn2.setBackgroundResource(R.drawable.flight_action_row_bg_selector);
+        soundBtn2.setActivated(false);
         if (Drone.soundEnabled) {
             soundBtn.setBackgroundColor(orangeColor);
+            soundBtn2.setBackgroundColor(orangeColor);
         }
     }
 
