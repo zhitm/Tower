@@ -19,10 +19,10 @@ import java.util.List;
 class DrawToolsImpl extends EditorToolsImpl implements AdapterView.OnItemSelectedListener {
 
     static final MissionItemType[] DRAW_ITEMS_TYPE = {
+            MissionItemType.SURVEY,
+            MissionItemType.SPLINE_SURVEY,
             MissionItemType.WAYPOINT,
             MissionItemType.SPLINE_WAYPOINT,
-            MissionItemType.SURVEY,
-            MissionItemType.SPLINE_SURVEY
     };
 
     private final static String EXTRA_SELECTED_DRAW_MISSION_ITEM_TYPE = "extra_selected_draww_mission_item_type";

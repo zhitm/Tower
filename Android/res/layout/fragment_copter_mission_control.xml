@@ -35,7 +35,7 @@
                 style="@style/flightControlButton.Row"
                 android:drawableTop="@drawable/ic_dronie_active"
                 android:text="@string/mission_control_dronie"
-                />
+                android:visibility="gone" />
 
             <Button
                 android:id="@+id/mc_change_voice2"

@@ -254,6 +254,7 @@ public class CopterFlightControlFragment extends BaseFlightControlFragment imple
                 break;
 
             case R.id.mc_armBtn:
+                VehicleApi.getApi(drone).setVehicleMode(VehicleMode.COPTER_STABILIZE);
                 getArmingConfirmation();
                 eventBuilder.setAction(ACTION_FLIGHT_ACTION_BUTTON).setLabel("Arm");
                 break;

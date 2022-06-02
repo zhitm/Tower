@@ -43,9 +43,7 @@
         <item
             android:id="@+id/navigation_compass_calibration"
             android:icon="@drawable/ic_action_compass"
-            android:title="@string/setup_mag_title"
-            android:visible="false"
-            android:enabled="false"/>
+            android:title="@string/setup_mag_title" />
 
     </group>
 

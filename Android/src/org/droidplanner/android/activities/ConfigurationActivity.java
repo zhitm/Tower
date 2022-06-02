@@ -1,7 +1,13 @@
 package org.droidplanner.android.activities;
 
+import static org.droidplanner.android.utils.prefs.DroidPlannerPrefs.DEFAULT_SHOW_FULL_INTERFACE;
+import static org.droidplanner.android.utils.prefs.DroidPlannerPrefs.PREF_SHOW_FULL_INTERFACE;
+
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
+
 import androidx.fragment.app.Fragment;
 
 import org.droidplanner.android.R;
@@ -9,6 +15,7 @@ import org.droidplanner.android.fragments.ChecklistFragment;
 import org.droidplanner.android.fragments.ParamsFragment;
 import org.droidplanner.android.fragments.calibration.compass.FragmentSetupCompass;
 import org.droidplanner.android.fragments.calibration.imu.FragmentSetupIMU;
+import org.droidplanner.android.utils.prefs.DroidPlannerPrefs;
 
 /**
  * This class implements and handles the various ui used for the drone
@@ -36,6 +43,7 @@ public class ConfigurationActivity extends DrawerNavigationUI {
         }
 
 		handleIntent(getIntent());
+
 	}
 
     @Override

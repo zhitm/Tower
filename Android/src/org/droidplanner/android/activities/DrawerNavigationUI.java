@@ -1,9 +1,13 @@
 package org.droidplanner.android.activities;
 
+import static org.droidplanner.android.utils.prefs.DroidPlannerPrefs.DEFAULT_SHOW_FULL_INTERFACE;
+import static org.droidplanner.android.utils.prefs.DroidPlannerPrefs.PREF_SHOW_FULL_INTERFACE;
+
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.content.SharedPreferences;
 import android.content.res.Configuration;
 import android.graphics.Typeface;
 import android.os.Bundle;
@@ -13,6 +17,8 @@ import androidx.core.view.GravityCompat;
 import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.appcompat.app.ActionBarDrawerToggle;
 import androidx.appcompat.widget.Toolbar;
+
+import android.preference.PreferenceManager;
 import android.util.TypedValue;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -142,6 +148,15 @@ public abstract class DrawerNavigationUI extends SuperUI implements
         actionDrawer = (SlidingDrawer) mDrawerLayout.findViewById(R.id.action_drawer_container);
         actionDrawer.setOnDrawerCloseListener(this);
         actionDrawer.setOnDrawerOpenListener(this);
+
+//        SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
+//        prefs.getBoolean(PREF_SHOW_FULL_INTERFACE, DEFAULT_SHOW_FULL_INTERFACE);
+//        if (prefs.getBoolean(PREF_SHOW_FULL_INTERFACE, DEFAULT_SHOW_FULL_INTERFACE)){
+//            var nav = mDrawerLayout.findViewById(R.id.navigation_params);
+//        }
+//        else{
+//
+//        }
     }
 
     protected View getActionDrawer() {
