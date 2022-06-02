@@ -9,7 +9,6 @@
         >
         <CheckBoxPreference
             android:defaultValue="false"
-            android:enabled="true"
             android:key="pref_show_full_interface"
             android:title="@string/show_full_interface"
             />

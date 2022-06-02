@@ -208,7 +208,7 @@ public class SettingsFragment extends PreferenceFragment implements OnSharedPref
 
         final String usageStatKey = DroidPlannerPrefs.PREF_SHOW_FULL_INTERFACE;
         final CheckBoxPreference enableFullListPref = (CheckBoxPreference) findPreference(usageStatKey);
-        enableFullListPref.setChecked(true);
+        //enableFullListPref.setChecked(true);
         if (enableFullListPref != null) {
             enableFullListPref
                     .setOnPreferenceChangeListener(new Preference.OnPreferenceChangeListener() {

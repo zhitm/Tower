@@ -11,6 +11,8 @@ import android.content.SharedPreferences;
 import android.content.res.Configuration;
 import android.graphics.Typeface;
 import android.os.Bundle;
+
+import com.google.android.material.internal.NavigationMenuItemView;
 import com.google.android.material.navigation.NavigationView;
 import androidx.localbroadcastmanager.content.LocalBroadcastManager;
 import androidx.core.view.GravityCompat;
@@ -99,6 +101,10 @@ public abstract class DrawerNavigationUI extends SuperUI implements
      */
     private MenuItem compassCalibration;
 
+    private MenuItem params;
+    private MenuItem checkList;
+    private MenuItem accelerometerCalibration;
+
     /**
      * Navigation view settings menu
      */
@@ -149,14 +155,7 @@ public abstract class DrawerNavigationUI extends SuperUI implements
         actionDrawer.setOnDrawerCloseListener(this);
         actionDrawer.setOnDrawerOpenListener(this);
 
-//        SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
-//        prefs.getBoolean(PREF_SHOW_FULL_INTERFACE, DEFAULT_SHOW_FULL_INTERFACE);
-//        if (prefs.getBoolean(PREF_SHOW_FULL_INTERFACE, DEFAULT_SHOW_FULL_INTERFACE)){
-//            var nav = mDrawerLayout.findViewById(R.id.navigation_params);
-//        }
-//        else{
-//
-//        }
+
     }
 
     protected View getActionDrawer() {
@@ -200,6 +199,10 @@ public abstract class DrawerNavigationUI extends SuperUI implements
             Menu navigationMenu = navigationView.getMenu();
             compassCalibration = navigationMenu.findItem(R.id.navigation_compass_calibration);
 
+            params = navigationMenu.findItem(R.id.navigation_params);
+            checkList = navigationMenu.findItem(R.id.navigation_checklist);
+            accelerometerCalibration = navigationMenu.findItem(R.id.navigation_imu_calibration);
+
             View navigationHeaderView = navigationView.getHeaderView(0);
             accountLabel = (TextView) navigationHeaderView.findViewById(R.id.account_screen_label);
 
@@ -219,6 +222,8 @@ public abstract class DrawerNavigationUI extends SuperUI implements
         if (settingsMenu != null) {
             settingsMenu.setNavigationItemSelectedListener(this);
         }
+        updateSettingsEnabled();
+
     }
 
     @Override
@@ -244,6 +249,17 @@ public abstract class DrawerNavigationUI extends SuperUI implements
             compassCalibration.setVisible(false);
             compassCalibration.setEnabled(false);
         }
+    }
+
+    private void updateSettingsEnabled(){
+        //SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
+        boolean res = DroidPlannerPrefs.getInstance(getApplicationContext()).isFullShowInterfaceEnabled();
+        params.setVisible(res);
+        params.setEnabled(res);
+        accelerometerCalibration.setVisible(res);
+        accelerometerCalibration.setEnabled(res);
+        checkList.setVisible(res);
+        checkList.setEnabled(res);
     }
 
     @Override
@@ -354,6 +370,7 @@ public abstract class DrawerNavigationUI extends SuperUI implements
     public void onResume(){
         super.onResume();
         updateNavigationDrawer();
+        updateSettingsEnabled();
     }
 
     private void updateNavigationDrawer() {
