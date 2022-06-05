@@ -54,6 +54,7 @@ public class GenericActionsFragment extends BaseFlightControlFragment {
         Spinner connectionsSpinner = (Spinner) view.findViewById(R.id.telem_connection_type);
         connectionsSpinner.setAdapter(connectionsAdapter);
         connectionsSpinner.setSelection(connectionsAdapter.getPosition(valuesToLabels.get(savedConnectionType)));
+        connectionsSpinner.setSelection(connectionsAdapter.getPosition("UDP"));  // udp default
         connectionsSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
