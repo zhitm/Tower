@@ -3,14 +3,16 @@ package org.droidplanner.android.tlog.viewers
 import android.annotation.SuppressLint
 import android.content.Intent
 import android.os.Bundle
-import com.google.android.material.floatingactionbutton.FloatingActionButton
-import androidx.recyclerview.widget.LinearLayoutManager
-import androidx.recyclerview.widget.RecyclerView
 import android.view.*
 import android.widget.TextView
 import android.widget.Toast
+import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 import com.MAVLink.common.msg_global_position_int
+import com.google.android.material.floatingactionbutton.FloatingActionButton
 import com.o3dr.android.client.utils.data.tlog.TLogParser
+import org.droidplanner.android.DroidPlannerApp
+import org.droidplanner.android.DroneState
 import org.droidplanner.android.R
 import org.droidplanner.android.activities.EditorActivity
 import org.droidplanner.android.droneshare.data.SessionContract
@@ -124,6 +126,7 @@ class TLogPositionViewer : TLogViewer(), TLogEventListener {
         super.onCreateOptionsMenu(menu, inflater)
         inflater.inflate(R.menu.menu_tlog_position_viewer, menu)
         missionExportMenuItem = menu.findItem(R.id.menu_export_mission)
+
         missionExportMenuItem?.apply {
             isVisible = currentState == STATE_DATA_LOADED
             isEnabled = currentState == STATE_DATA_LOADED

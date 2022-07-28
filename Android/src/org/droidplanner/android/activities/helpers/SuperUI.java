@@ -41,6 +41,7 @@ import com.o3dr.services.android.lib.model.SimpleCommandListener;
 
 import org.droidplanner.android.AppService;
 import org.droidplanner.android.DroidPlannerApp;
+import org.droidplanner.android.DroneState;
 import org.droidplanner.android.R;
 import org.droidplanner.android.dialogs.SlideToUnlockDialog;
 import org.droidplanner.android.dialogs.SupportYesNoDialog;
@@ -302,12 +303,14 @@ public abstract class SuperUI extends AppCompatActivity implements DroidPlannerA
         final boolean areMissionMenusEnabled = enableMissionMenus();
 
         final MenuItem sendMission = menu.findItem(R.id.menu_upload_mission);
+        Boolean isVisible = (DroidPlannerApp.droneState == DroneState.UsualDrone&&areMissionMenusEnabled);
+
         sendMission.setEnabled(areMissionMenusEnabled);
-        sendMission.setVisible(areMissionMenusEnabled);
+        sendMission.setVisible(isVisible);
 
         final MenuItem loadMission = menu.findItem(R.id.menu_download_mission);
         loadMission.setEnabled(areMissionMenusEnabled);
-        loadMission.setVisible(areMissionMenusEnabled);
+        loadMission.setVisible(isVisible);
 
         toggleConnectionItem.setTitle(R.string.menu_disconnect);
 
@@ -349,6 +352,7 @@ public abstract class SuperUI extends AppCompatActivity implements DroidPlannerA
 
         switch (item.getItemId()) {
             case R.id.menu_connect:
+                DroidPlannerApp.makeDroneConfigChangeable();
                 toggleDroneConnection();
                 return true;
 

@@ -14,6 +14,7 @@ import android.os.Bundle;
 
 import com.google.android.material.internal.NavigationMenuItemView;
 import com.google.android.material.navigation.NavigationView;
+
 import androidx.localbroadcastmanager.content.LocalBroadcastManager;
 import androidx.core.view.GravityCompat;
 import androidx.drawerlayout.widget.DrawerLayout;
@@ -34,6 +35,8 @@ import com.o3dr.android.client.Drone;
 import com.o3dr.android.client.apis.CapabilityApi;
 import com.o3dr.services.android.lib.drone.attribute.AttributeEvent;
 
+import org.droidplanner.android.DroidPlannerApp;
+import org.droidplanner.android.DroneState;
 import org.droidplanner.android.R;
 import org.droidplanner.android.activities.helpers.SuperUI;
 import org.droidplanner.android.fragments.SettingsFragment;
@@ -42,16 +45,19 @@ import org.droidplanner.android.tlog.TLogActivity;
 import org.droidplanner.android.utils.prefs.DroidPlannerPrefs;
 import org.droidplanner.android.view.SlidingDrawer;
 
+import java.util.concurrent.TimeUnit;
+
 /**
  * This abstract activity provides its children access to a navigation drawer
  * interface.
  */
 public abstract class DrawerNavigationUI extends SuperUI implements
-    SlidingDrawer.OnDrawerOpenListener,
-    SlidingDrawer.OnDrawerCloseListener,
-    NavigationView.OnNavigationItemSelectedListener {
+        SlidingDrawer.OnDrawerOpenListener,
+        SlidingDrawer.OnDrawerCloseListener,
+        NavigationView.OnNavigationItemSelectedListener {
 
     private static final IntentFilter filter = new IntentFilter();
+
     static {
         filter.addAction(AttributeEvent.TYPE_UPDATED);
     }
@@ -59,7 +65,7 @@ public abstract class DrawerNavigationUI extends SuperUI implements
     private final BroadcastReceiver receiver = new BroadcastReceiver() {
         @Override
         public void onReceive(Context context, Intent intent) {
-            switch(intent.getAction()){
+            switch (intent.getAction()) {
                 case AttributeEvent.TYPE_UPDATED:
                     updateCompassCalibrationAvailability();
                     break;
@@ -115,7 +121,7 @@ public abstract class DrawerNavigationUI extends SuperUI implements
     private final CapabilityApi.FeatureSupportListener featureSupportListener = new CapabilityApi.FeatureSupportListener() {
         @Override
         public void onFeatureSupportResult(String featureId, int result, Bundle resultInfo) {
-            switch(featureId) {
+            switch (featureId) {
                 case CapabilityApi.FeatureIds.COMPASS_CALIBRATION:
                     boolean isSupported = result == CapabilityApi.FEATURE_SUPPORTED;
                     compassCalibration.setVisible(isSupported);
@@ -155,7 +161,23 @@ public abstract class DrawerNavigationUI extends SuperUI implements
         actionDrawer.setOnDrawerCloseListener(this);
         actionDrawer.setOnDrawerOpenListener(this);
 
+        navigationView = (NavigationView) findViewById(R.id.navigation_drawer_view);
+        if (navigationView != null) {
+            Menu navigationMenu = navigationView.getMenu();
+            Boolean isVisible = DroidPlannerApp.droneState == DroneState.UsualDrone;
+            MenuItem navigation_locator = navigationMenu.findItem(R.id.navigation_locator);
+            MenuItem navigation_editor = navigationMenu.findItem(R.id.navigation_editor);
+            navigation_locator.setVisible(isVisible);
+            navigation_editor.setVisible(isVisible);
+//            Boolean isAntennaMode = DroidPlannerApp.droneState == DroneState.Antenna;
+//            Boolean isUsualDroneMode = DroidPlannerApp.droneState == DroneState.UsualDrone;
+//            MenuItem antennaBtn = navigationMenu.findItem(R.id.change_connection_to_antenna);
+//            MenuItem usualDroneBtn = navigationMenu.findItem(R.id.change_connection_to_drone);
+//
+//            antennaBtn.setVisible(isUsualDroneMode);
+//            usualDroneBtn.setVisible(isAntennaMode);
 
+        }
     }
 
     protected View getActionDrawer() {
@@ -193,8 +215,8 @@ public abstract class DrawerNavigationUI extends SuperUI implements
         navigationView = (NavigationView) findViewById(R.id.navigation_drawer_view);
         if (navigationView != null) {
             navigationView.inflateHeaderView(DroidPlannerPrefs.ENABLE_DRONESHARE_ACCOUNT
-                ? R.layout.nav_header_droneshare
-                : R.layout.nav_header_main);
+                    ? R.layout.nav_header_droneshare
+                    : R.layout.nav_header_main);
             navigationView.setNavigationItemSelectedListener(this);
             Menu navigationMenu = navigationView.getMenu();
             compassCalibration = navigationMenu.findItem(R.id.navigation_compass_calibration);
@@ -222,19 +244,20 @@ public abstract class DrawerNavigationUI extends SuperUI implements
         if (settingsMenu != null) {
             settingsMenu.setNavigationItemSelectedListener(this);
         }
+
         updateSettingsEnabled();
 
     }
 
     @Override
-    protected void onDroneConnected(){
+    protected void onDroneConnected() {
         super.onDroneConnected();
         updateCompassCalibrationAvailability();
         getBroadcastManager().registerReceiver(receiver, filter);
     }
 
     @Override
-    protected void onDroneDisconnected(){
+    protected void onDroneDisconnected() {
         super.onDroneDisconnected();
         getBroadcastManager().unregisterReceiver(receiver);
         updateCompassCalibrationAvailability();
@@ -242,16 +265,15 @@ public abstract class DrawerNavigationUI extends SuperUI implements
 
     private void updateCompassCalibrationAvailability() {
         Drone drone = dpApp.getDrone();
-        if(drone != null){
+        if (drone != null) {
             CapabilityApi.getApi(drone).checkFeatureSupport(CapabilityApi.FeatureIds.COMPASS_CALIBRATION, featureSupportListener);
-        }
-        else{
+        } else {
             compassCalibration.setVisible(false);
             compassCalibration.setEnabled(false);
         }
     }
 
-    private void updateSettingsEnabled(){
+    private void updateSettingsEnabled() {
         //SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
         boolean res = DroidPlannerPrefs.getInstance(getApplicationContext()).isFullShowInterfaceEnabled();
         params.setVisible(res);
@@ -290,7 +312,6 @@ public abstract class DrawerNavigationUI extends SuperUI implements
     public boolean onNavigationItemSelected(MenuItem menuItem) {
 
         int id = menuItem.getItemId();
-
         switch (id) {
             case R.id.navigation_flight_data:
                 mNavigationIntent = new Intent(this, FlightActivity.class);
@@ -321,11 +342,32 @@ public abstract class DrawerNavigationUI extends SuperUI implements
 
             case R.id.navigation_compass_calibration:
                 mNavigationIntent = new Intent(this, ConfigurationActivity.class)
-                    .putExtra(ConfigurationActivity.EXTRA_CONFIG_SCREEN_ID, id);
+                        .putExtra(ConfigurationActivity.EXTRA_CONFIG_SCREEN_ID, id);
                 break;
 
             case R.id.navigation_settings:
                 mNavigationIntent = new Intent(this, SettingsActivity.class);
+                break;
+            case R.id.change_connection_to_antenna:
+                mNavigationIntent = new Intent(this, FlightActivity.class);
+                if (DroidPlannerApp.droneState != DroneState.Antenna) {
+                    DroidPlannerApp.disconnectFromDrone(this);
+                    DroidPlannerApp.setDroneState(DroneState.Antenna);
+                    if (DroidPlannerApp.isAntennaConfigSaved) {
+                        DroidPlannerApp.connectToDrone(this);
+                    }
+                }
+                break;
+
+            case R.id.change_connection_to_drone:
+                mNavigationIntent = new Intent(this, FlightActivity.class);
+                if (DroidPlannerApp.droneState != DroneState.UsualDrone) {
+                    DroidPlannerApp.disconnectFromDrone(this);
+                    DroidPlannerApp.setDroneState(DroneState.UsualDrone);
+                    if (DroidPlannerApp.isUsualDroneConfigSaved) {
+                        DroidPlannerApp.connectToDrone(this);
+                    }
+                }
                 break;
         }
 
@@ -352,6 +394,15 @@ public abstract class DrawerNavigationUI extends SuperUI implements
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         super.onCreateOptionsMenu(menu);
+        navigationView = (NavigationView) findViewById(R.id.navigation_drawer_view);
+        if (navigationView != null) {
+            Menu navigationMenu = navigationView.getMenu();
+            Boolean isVisible = DroidPlannerApp.droneState == DroneState.UsualDrone;
+            MenuItem navigation_locator = navigationMenu.findItem(R.id.navigation_locator);
+            MenuItem navigation_editor = navigationMenu.findItem(R.id.navigation_editor);
+            navigation_locator.setVisible(isVisible);
+            navigation_editor.setVisible(isVisible);
+        }
         return true;
     }
 
@@ -367,7 +418,7 @@ public abstract class DrawerNavigationUI extends SuperUI implements
     }
 
     @Override
-    public void onResume(){
+    public void onResume() {
         super.onResume();
         updateNavigationDrawer();
         updateSettingsEnabled();
@@ -388,7 +439,8 @@ public abstract class DrawerNavigationUI extends SuperUI implements
         }
 
         MenuItem settings = settingsMenu.getMenu().findItem(R.id.navigation_settings);
-        if(settings != null){
+
+        if (settings != null) {
             settings.setChecked(false);
         }
     }

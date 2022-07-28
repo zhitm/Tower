@@ -30,6 +30,7 @@ import com.o3dr.services.android.lib.drone.property.Type;
 import com.o3dr.services.android.lib.drone.property.VehicleMode;
 
 import org.droidplanner.android.DroidPlannerApp;
+import org.droidplanner.android.DroneState;
 import org.droidplanner.android.R;
 import org.droidplanner.android.activities.EditorActivity;
 import org.droidplanner.android.dialogs.GuidedDialog;
@@ -158,6 +159,12 @@ public class FlightMapFragment extends DroneMap implements DPMap.OnMapLongClickL
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater){
         super.onCreateOptionsMenu(menu, inflater);
         inflater.inflate(R.menu.menu_flight_map, menu);
+        Boolean isVisible = DroidPlannerApp.droneState == DroneState.UsualDrone;
+        MenuItem menu_export_flight = menu.findItem(R.id.menu_export_flight_path_as_mission);
+        MenuItem menu_map_clear = menu.findItem(R.id.menu_map_clear_flight_path);
+        menu_export_flight.setVisible(isVisible);
+        menu_map_clear.setVisible(isVisible);
+
     }
 
     @Override

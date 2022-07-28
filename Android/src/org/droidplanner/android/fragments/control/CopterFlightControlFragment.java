@@ -25,6 +25,8 @@ import com.o3dr.services.android.lib.drone.property.VehicleMode;
 import com.o3dr.services.android.lib.gcs.follow.FollowState;
 import com.o3dr.services.android.lib.model.SimpleCommandListener;
 
+import org.droidplanner.android.DroidPlannerApp;
+import org.droidplanner.android.DroneState;
 import org.droidplanner.android.R;
 import org.droidplanner.android.activities.helpers.SuperUI;
 import org.droidplanner.android.dialogs.SlideToUnlockDialog;
@@ -169,6 +171,7 @@ public class CopterFlightControlFragment extends BaseFlightControlFragment imple
     @Override
     public void onViewCreated(View view, Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
+        int isVisible = DroidPlannerApp.droneState == DroneState.UsualDrone ? View.VISIBLE : View.GONE;
 
         orangeColor = getResources().getColor(R.color.orange);
 
@@ -182,6 +185,7 @@ public class CopterFlightControlFragment extends BaseFlightControlFragment imple
 
         homeBtn = (Button) view.findViewById(R.id.mc_homeBtn);
         homeBtn.setOnClickListener(this);
+        homeBtn.setVisibility(isVisible);
 
         final Button armBtn = (Button) view.findViewById(R.id.mc_armBtn);
         armBtn.setOnClickListener(this);
@@ -200,12 +204,15 @@ public class CopterFlightControlFragment extends BaseFlightControlFragment imple
 
         autoBtn = (Button) view.findViewById(R.id.mc_autoBtn);
         autoBtn.setOnClickListener(this);
+        autoBtn.setVisibility(isVisible);
 
         final Button takeoffInAuto = (Button) view.findViewById(R.id.mc_TakeoffInAutoBtn);
         takeoffInAuto.setOnClickListener(this);
+        takeoffInAuto.setVisibility(isVisible);
 
         gotoBtn = (Button) view.findViewById(R.id.mc_goto);
         gotoBtn.setOnClickListener(this);
+        gotoBtn.setVisibility(isVisible);
 
         lookAt = (Button) view.findViewById(R.id.mc_lookAt);
         lookAt.setOnClickListener(this);
@@ -215,12 +222,16 @@ public class CopterFlightControlFragment extends BaseFlightControlFragment imple
 
         soundBtn = (Button) view.findViewById(R.id.mc_change_voice);
         soundBtn.setOnClickListener(this);
+        soundBtn.setVisibility(isVisible);
 
         showCordsBtn = (Button) view.findViewById(R.id.mc_show_coords);
         showCordsBtn.setOnClickListener(this);
+        showCordsBtn.setVisibility(isVisible);
 
         soundBtn2 = (Button) view.findViewById(R.id.mc_change_voice2);
         soundBtn2.setOnClickListener(this);
+        soundBtn2.setVisibility(isVisible);
+
     }
 
     @Override

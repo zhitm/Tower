@@ -1,5 +1,7 @@
 <?xml version='1.0' encoding='UTF-8'?>
 <resources>
+
+
     <string name="settings">Einstellungen</string>
     <string name="menu_drone_setup">Drohnen-Setup</string>
     <string name="editor">Editor</string>

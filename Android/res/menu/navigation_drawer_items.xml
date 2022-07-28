@@ -20,6 +20,15 @@
             android:icon="@drawable/ic_menu_flight_history_grey600_24dp"
             android:title="@string/locator"/>
 
+        <item
+            android:id="@+id/change_connection_to_antenna"
+            android:icon="@drawable/ic_menu_editor_grey600_24dp"
+            android:title="@string/change_connection_to_antenna"/>
+        <item
+            android:id="@+id/change_connection_to_drone"
+            android:icon="@drawable/ic_menu_editor_grey600_24dp"
+            android:title="@string/change_connection_to_drone"/>
+
     </group>
 
     <group

@@ -3,6 +3,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     tools:ignore="MissingTranslation">
 
+
     <!-- Generic strings -->
     <string name="settings">Настройки</string>
     <string name="label_general">Общий</string>
@@ -14,7 +15,6 @@
     <string name="upload_mission">Загрузить миссию</string>
     <string name="download_mission">Скачать миссию</string>
     <string name="show_full_interface">Показать полную версию интерфейса</string>
-
 
     <string name="screen_cal">Калибровка</string>
     <string name="screen_checklist">Контрольный список</string>
