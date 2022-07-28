@@ -1,5 +1,7 @@
 package org.droidplanner.android.fragments.control;
 
+import static com.o3dr.services.android.lib.drone.mission.action.MissionActions.ACTION_GOTO_WAYPOINT;
+
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
@@ -11,11 +13,13 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.Toast;
 
+import com.MAVLink.enums.MAV_GOTO;
 import com.google.android.gms.analytics.HitBuilders;
 import com.o3dr.android.client.Drone;
 import com.o3dr.android.client.apis.ControlApi;
 import com.o3dr.android.client.apis.FollowApi;
 import com.o3dr.android.client.apis.VehicleApi;
+import com.o3dr.services.android.lib.coordinate.LatLong;
 import com.o3dr.services.android.lib.drone.attribute.AttributeEvent;
 import com.o3dr.services.android.lib.drone.attribute.AttributeEventExtra;
 import com.o3dr.services.android.lib.drone.attribute.AttributeType;
@@ -159,7 +163,7 @@ public class CopterFlightControlFragment extends BaseFlightControlFragment imple
     private Button soundBtn;
     private Button soundBtn2;
     private Button showCordsBtn;
-
+    private Button upTo60m;
 
     private int orangeColor;
 
@@ -171,7 +175,8 @@ public class CopterFlightControlFragment extends BaseFlightControlFragment imple
     @Override
     public void onViewCreated(View view, Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-        int isVisible = DroidPlannerApp.droneState == DroneState.UsualDrone ? View.VISIBLE : View.GONE;
+        int isVisibleInDroneMode = DroidPlannerApp.droneState == DroneState.UsualDrone ? View.VISIBLE : View.GONE;
+        int isVisibleInAntennaMode = DroidPlannerApp.droneState == DroneState.UsualDrone ? View.GONE : View.VISIBLE;
 
         orangeColor = getResources().getColor(R.color.orange);
 
@@ -185,7 +190,7 @@ public class CopterFlightControlFragment extends BaseFlightControlFragment imple
 
         homeBtn = (Button) view.findViewById(R.id.mc_homeBtn);
         homeBtn.setOnClickListener(this);
-        homeBtn.setVisibility(isVisible);
+        homeBtn.setVisibility(isVisibleInDroneMode);
 
         final Button armBtn = (Button) view.findViewById(R.id.mc_armBtn);
         armBtn.setOnClickListener(this);
@@ -204,15 +209,19 @@ public class CopterFlightControlFragment extends BaseFlightControlFragment imple
 
         autoBtn = (Button) view.findViewById(R.id.mc_autoBtn);
         autoBtn.setOnClickListener(this);
-        autoBtn.setVisibility(isVisible);
+        autoBtn.setVisibility(isVisibleInDroneMode);
 
         final Button takeoffInAuto = (Button) view.findViewById(R.id.mc_TakeoffInAutoBtn);
         takeoffInAuto.setOnClickListener(this);
-        takeoffInAuto.setVisibility(isVisible);
+        takeoffInAuto.setVisibility(isVisibleInDroneMode);
 
         gotoBtn = (Button) view.findViewById(R.id.mc_goto);
         gotoBtn.setOnClickListener(this);
-        gotoBtn.setVisibility(isVisible);
+        gotoBtn.setVisibility(isVisibleInDroneMode);
+
+        upTo60m = (Button) view.findViewById(R.id.mc_goto_60m);
+        upTo60m.setOnClickListener(this);
+        upTo60m.setVisibility(isVisibleInAntennaMode);
 
         lookAt = (Button) view.findViewById(R.id.mc_lookAt);
         lookAt.setOnClickListener(this);
@@ -222,15 +231,15 @@ public class CopterFlightControlFragment extends BaseFlightControlFragment imple
 
         soundBtn = (Button) view.findViewById(R.id.mc_change_voice);
         soundBtn.setOnClickListener(this);
-        soundBtn.setVisibility(isVisible);
+        soundBtn.setVisibility(isVisibleInDroneMode);
 
         showCordsBtn = (Button) view.findViewById(R.id.mc_show_coords);
         showCordsBtn.setOnClickListener(this);
-        showCordsBtn.setVisibility(isVisible);
+        showCordsBtn.setVisibility(isVisibleInDroneMode);
 
         soundBtn2 = (Button) view.findViewById(R.id.mc_change_voice2);
         soundBtn2.setOnClickListener(this);
-        soundBtn2.setVisibility(isVisible);
+        soundBtn2.setVisibility(isVisibleInDroneMode);
 
     }
 
@@ -322,6 +331,10 @@ public class CopterFlightControlFragment extends BaseFlightControlFragment imple
                 updateGuidedModeButtons();
                 //toggleFollowMe();
                 break;
+            case R.id.mc_goto_60m:
+                Toast.makeText(v.getContext(), "Not implemented yet", Toast.LENGTH_SHORT).show();
+//                ControlApi.getApi(getDrone()).goTo(new LatLong(10,10), true, null);
+                break;
             case R.id.mc_lookAt:
                 Drone.currentLongPressState = Drone.currentLongPressState == Drone.LongPressState.LOOK_AT? Drone.LongPressState.NO_SELECTED : Drone.LongPressState.LOOK_AT;
                 //drone.lookAtMode = !drone.lookAtMode;
@@ -376,15 +389,27 @@ public class CopterFlightControlFragment extends BaseFlightControlFragment imple
         }
     }
 
-    private void getTakeOffConfirmation() {
+    private void getTakeOffConfirmation(double altitude){
         final SlideToUnlockDialog unlockDialog = SlideToUnlockDialog.newInstance("take off", new Runnable() {
             @Override
             public void run() {
-                final double takeOffAltitude = getAppPrefs().getDefaultAltitude();
-                ControlApi.getApi(getDrone()).takeoff(takeOffAltitude, null);
+                ControlApi.getApi(getDrone()).takeoff(altitude, null);
             }
         });
         unlockDialog.show(getChildFragmentManager(), "Slide to take off");
+    }
+
+    private void getTakeOffConfirmation() {
+        final double takeOffAltitude = getAppPrefs().getDefaultAltitude();
+        getTakeOffConfirmation(takeOffAltitude);
+//        final SlideToUnlockDialog unlockDialog = SlideToUnlockDialog.newInstance("take off", new Runnable() {
+//            @Override
+//            public void run() {
+//                final double takeOffAltitude = getAppPrefs().getDefaultAltitude();
+//                ControlApi.getApi(getDrone()).takeoff(takeOffAltitude, null);
+//            }
+//        });
+//        unlockDialog.show(getChildFragmentManager(), "Slide to take off");
     }
 
     private void getTakeOffInAutoConfirmation() {

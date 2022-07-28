@@ -5,6 +5,7 @@
 
     <string name="change_connection_to_antenna">Switch to antenna</string>
     <string name="change_connection_to_drone">Switch to drone</string>
+    <string name="mission_control_goto_60m">Up to 60m</string>
 
 
     <!-- Generic strings -->

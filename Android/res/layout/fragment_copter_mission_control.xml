@@ -148,6 +148,16 @@
                 tools:ignore="ContentDescription" />
 
             <Button
+                android:id="@+id/mc_goto_60m"
+                style="@style/flightControlButton.Row"
+                android:layout_width="90dp"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:drawableTop="@drawable/ic_takeoff_active"
+                android:text="@string/mission_control_goto_60m"
+                tools:ignore="ContentDescription" />
+
+            <Button
                 android:id="@+id/mc_lookAt"
                 style="@style/flightControlButton.Row"
                 android:layout_width="90dp"
