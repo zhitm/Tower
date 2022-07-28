@@ -169,14 +169,6 @@ public abstract class DrawerNavigationUI extends SuperUI implements
             MenuItem navigation_editor = navigationMenu.findItem(R.id.navigation_editor);
             navigation_locator.setVisible(isVisible);
             navigation_editor.setVisible(isVisible);
-//            Boolean isAntennaMode = DroidPlannerApp.droneState == DroneState.Antenna;
-//            Boolean isUsualDroneMode = DroidPlannerApp.droneState == DroneState.UsualDrone;
-//            MenuItem antennaBtn = navigationMenu.findItem(R.id.change_connection_to_antenna);
-//            MenuItem usualDroneBtn = navigationMenu.findItem(R.id.change_connection_to_drone);
-//
-//            antennaBtn.setVisible(isUsualDroneMode);
-//            usualDroneBtn.setVisible(isAntennaMode);
-
         }
     }
 
@@ -310,7 +302,10 @@ public abstract class DrawerNavigationUI extends SuperUI implements
      */
     @Override
     public boolean onNavigationItemSelected(MenuItem menuItem) {
-
+        navigationView = (NavigationView) findViewById(R.id.navigation_drawer_view);
+        Menu navigationMenu = navigationView.getMenu();
+        MenuItem antennaBtn = navigationMenu.findItem(R.id.change_connection_to_antenna);
+        MenuItem usualDroneBtn = navigationMenu.findItem(R.id.change_connection_to_drone);
         int id = menuItem.getItemId();
         switch (id) {
             case R.id.navigation_flight_data:
@@ -350,6 +345,8 @@ public abstract class DrawerNavigationUI extends SuperUI implements
                 break;
             case R.id.change_connection_to_antenna:
                 mNavigationIntent = new Intent(this, FlightActivity.class);
+                antennaBtn.setVisible(false);
+                usualDroneBtn.setVisible(true);
                 if (DroidPlannerApp.droneState != DroneState.Antenna) {
                     DroidPlannerApp.disconnectFromDrone(this);
                     DroidPlannerApp.setDroneState(DroneState.Antenna);
@@ -361,6 +358,8 @@ public abstract class DrawerNavigationUI extends SuperUI implements
 
             case R.id.change_connection_to_drone:
                 mNavigationIntent = new Intent(this, FlightActivity.class);
+                antennaBtn.setVisible(true);
+                usualDroneBtn.setVisible(false);
                 if (DroidPlannerApp.droneState != DroneState.UsualDrone) {
                     DroidPlannerApp.disconnectFromDrone(this);
                     DroidPlannerApp.setDroneState(DroneState.UsualDrone);
